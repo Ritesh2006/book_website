@@ -35,7 +35,7 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/ai/chat', { 
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/ai/chat`, { 
         message: text 
       });
       setMessages(prev => [...prev, { text: res.data.reply, sender: 'bot' }]);

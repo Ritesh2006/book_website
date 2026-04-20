@@ -48,7 +48,7 @@ const App = () => {
 
   const categories = ['All', 'Classic', 'Mystery', 'Horror', 'Fantasy', 'Philosophy', 'Adventure', 'Sci-Fi', 'Romance'];
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://book-website-1.onrender.com';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com';
 
   const fetchBooks = async (page, query = '', category = 'All') => {
     setLoading(true);

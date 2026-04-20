@@ -21,10 +21,10 @@ const Admin = () => {
 
   const fetchAdminData = async () => {
     try {
-      const bRes = await axios.get('http://localhost:5000/api/books?limit=100');
+      const bRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/books?limit=100`);
       setBooks(bRes.data.books || []);
       
-      const uRes = await axios.get('http://localhost:5000/api/users');
+      const uRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users`);
       setUsers(uRes.data || []);
       
       setLoading(false);
@@ -41,7 +41,7 @@ const Admin = () => {
   const handleAddBook = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/books', newBook);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/books`, newBook);
       alert('Book added successfully!');
       setShowAddModal(false);
       fetchAdminData();

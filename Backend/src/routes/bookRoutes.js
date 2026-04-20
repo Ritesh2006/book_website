@@ -10,6 +10,7 @@ router.get('/:id', bookController.getBookById);
 
 // @route GET /api/books/search
 router.get('/search', async (req, res) => {
+    try {
         const query = req.query.q || '';
         const category = req.query.category || 'All';
         const page = parseInt(req.query.page) || 1;

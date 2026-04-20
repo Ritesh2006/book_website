@@ -21,7 +21,7 @@ const Community = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/posts');
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/posts`);
       setPosts(res.data || []);
       setLoading(false);
     } catch (err) {
@@ -53,7 +53,7 @@ const Community = () => {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/posts', postData);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/posts`, postData);
       setNewPostContent('');
       setShowCreateModal(false);
       fetchPosts();
