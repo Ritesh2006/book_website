@@ -132,16 +132,31 @@
      font-size: 0.7rem !important;
   }
 
-  /* Fix for overlapping price and button */
+  /* Pro-Grade Layout: Keep horizontal but resize components */
   .premium-card div[style*="justify-content: space-between"] {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.75rem !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem !important;
+    margin-top: 0.5rem !important;
   }
 
-  .premium-card div[style*="justify-content: space-between"] button {
-    width: 100% !important;
-    justify-content: center !important;
+  .premium-card div[style*="flex-direction: column"] span[style*="font-size: 0.75rem"] {
+    font-size: 0.65rem !important;
+  }
+
+  .premium-card div[style*="flex-direction: column"] span[style*="font-size: 1.1rem"] {
+    font-size: 0.9rem !important;
+  }
+
+  .premium-card button {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important; /* Prevent "Read PDF" on two lines */
+    gap: 0.3rem !important;
+    flex-shrink: 0;
   }
 }
 
