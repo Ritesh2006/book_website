@@ -66,7 +66,7 @@ const UserDashboard = () => {
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
+      <div className="dashboard-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
         {stats.map((stat, i) => (
           <motion.div 
             key={i}
@@ -87,7 +87,7 @@ const UserDashboard = () => {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '70% 30%', gap: '2rem' }}>
+      <div className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: '70% 30%', gap: '2rem' }}>
         {/* Left Column: Recent Books */}
         <div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>Continue Reading</h2>
