@@ -48,56 +48,38 @@ const App = () => {
 
   const categories = ['All', 'Classic', 'Mystery', 'Horror', 'Fantasy', 'Philosophy', 'Adventure', 'Sci-Fi', 'Romance'];
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://book-website-1.onrender.com';
+
   const fetchBooks = async (page, query = '', category = 'All') => {
     setLoading(true);
     try {
-      let url = `http://localhost:5000/api/books?page=${page}&limit=8`;
-      if (query) url = `http://localhost:5000/api/books/search?q=${query}&page=${page}&limit=8`;
-      if (category !== 'All') url = `http://localhost:5000/api/books/category/${category}?page=${page}&limit=8`;
+      let url = `${API_BASE_URL}/api/books?page=${page}&limit=8&category=${category}`;
+      if (query) {
+        url = `${API_BASE_URL}/api/books/search?q=${query}&page=${page}&limit=8&category=${category}`;
+      }
       
       const res = await axios.get(url);
       let fetchedBooks = res.data.books || [];
 
-      // Auto-update images from Google Books if needed
-      const googleUpdatedBooks = await Promise.all((fetchedBooks.length > 0 ? fetchedBooks : mockBooks).map(async (book) => {
-        // Only fetch if it's a mock or broken
-        if (book.coverImage.includes('placehold.co') || book.id > 0) {
+      // Update images from Google Books if needed (Optimized)
+      const googleUpdatedBooks = await Promise.all(fetchedBooks.map(async (book) => {
+        if (book.coverImage?.includes('placehold.co') || !book.coverImage) {
           try {
             const gbRes = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(book.title)}&maxResults=1`);
             if (gbRes.data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail) {
               return { ...book, coverImage: gbRes.data.items[0].volumeInfo.imageLinks.thumbnail.replace('http:', 'https:') };
             }
-          } catch (e) {
-            return book;
-          }
+          } catch (e) {}
         }
         return book;
       }));
-
-      // Filter and Sort
-      let filtered = googleUpdatedBooks;
-      if (category !== 'All') filtered = filtered.filter(b => b.category === category);
-      if (query) filtered = filtered.filter(b => b.title.toLowerCase().includes(query.toLowerCase()));
       
-      setBooks(filtered);
+      setBooks(googleUpdatedBooks);
       setTotalPages(res.data.pages || 1);
     } catch (err) {
       console.error("API Error:", err);
-      // Fallback with Google Image update
-      const googleUpdatedMock = await Promise.all(mockBooks.map(async (book) => {
-        try {
-          const gbRes = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(book.title)}&maxResults=1`);
-          if (gbRes.data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail) {
-            return { ...book, coverImage: gbRes.data.items[0].volumeInfo.imageLinks.thumbnail.replace('http:', 'https:') };
-          }
-        } catch (e) {}
-        return book;
-      }));
-
-      let filtered = googleUpdatedMock;
-      if (category !== 'All') filtered = filtered.filter(b => b.category === category);
-      if (query) filtered = filtered.filter(b => b.title.toLowerCase().includes(query.toLowerCase()));
-      setBooks(filtered);
+      // Fallback logic for development or when API is down
+      setBooks(mockBooks.filter(b => (category === 'All' || b.category === category) && b.title.toLowerCase().includes(query.toLowerCase())));
       setTotalPages(1);
     }
     setLoading(false);

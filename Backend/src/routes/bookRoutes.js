@@ -10,19 +10,30 @@ router.get('/:id', bookController.getBookById);
 
 // @route GET /api/books/search
 router.get('/search', async (req, res) => {
-    try {
         const query = req.query.q || '';
+        const category = req.query.category || 'All';
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 8;
         const skip = (page - 1) * limit;
 
-        const filter = {
-            $or: [
-                { title: { $regex: query, $options: 'i' } },
-                { author: { $regex: query, $options: 'i' } },
-                { category: { $regex: query, $options: 'i' } }
-            ]
-        };
+        let filter = {};
+        
+        if (query) {
+            filter.$and = [
+                {
+                    $or: [
+                        { title: { $regex: query, $options: 'i' } },
+                        { author: { $regex: query, $options: 'i' } },
+                        { category: { $regex: query, $options: 'i' } }
+                    ]
+                }
+            ];
+        }
+
+        if (category !== 'All') {
+            if (!filter.$and) filter.$and = [];
+            filter.$and.push({ category: category });
+        }
 
         const total = await require('../models/Book').countDocuments(filter);
         const books = await require('../models/Book').find(filter).skip(skip).limit(limit);

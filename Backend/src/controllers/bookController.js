@@ -1,14 +1,17 @@
 const Book = require('../models/Book');
 
-// Get all books with pagination
+// Get all books with pagination and category filtering
 exports.getBooks = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 8;
+        const category = req.query.category || 'All';
         const skip = (page - 1) * limit;
 
-        const total = await Book.countDocuments();
-        const books = await Book.find().skip(skip).limit(limit);
+        const filter = category && category !== 'All' ? { category } : {};
+
+        const total = await Book.countDocuments(filter);
+        const books = await Book.find(filter).skip(skip).limit(limit);
 
         res.json({
             books,
