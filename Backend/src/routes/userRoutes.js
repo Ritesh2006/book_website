@@ -32,8 +32,10 @@ router.post('/register', async (req, res) => {
             picture: name ? name.charAt(0).toUpperCase() : 'U'
         });
         
+        console.log(`User created: ${email}`);
         return res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
+        console.error("Registration error:", err);
         return res.status(500).json({ message: 'Server error during registration' });
     }
 });
@@ -42,6 +44,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log(`Login attempt for: ${email}`);
         
         // Check if the user is the specific admin.
         if (email === 'admin@bookhaven.com' && password === 'admin123') {
@@ -81,6 +84,7 @@ router.post('/login', async (req, res) => {
         
         return res.json({ message: 'Login successful', user: { email: user.email, role: user.role, name: user.name, picture: user.picture } });
     } catch (err) {
+        console.error("Login error:", err);
         return res.status(500).json({ message: 'Server error during login' });
     }
 });
