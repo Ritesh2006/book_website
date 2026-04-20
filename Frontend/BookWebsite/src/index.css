@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --glass: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme='dark'] {
+  --primary: #818cf8;
+  --primary-hover: #6366f1;
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: #334155;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --glass: rgba(15, 23, 42, 0.7);
+  /* Glow system */
+  --glow-primary: 0 0 20px rgba(129, 140, 248, 0.12), 0 0 40px rgba(129, 140, 248, 0.06);
+  --glow-card: 0 0 0 1px rgba(129, 140, 248, 0.08), 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glow-btn: 0 0 18px rgba(129, 140, 248, 0.35), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+  100% { opacity: 0.3; transform: scale(1); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Dark Mode Glow Effects ── */
+[data-theme='dark'] .premium-card {
+  box-shadow: var(--glow-card);
+  border-color: rgba(129, 140, 248, 0.1);
+}
+
+[data-theme='dark'] .premium-card:hover {
+  box-shadow: var(--glow-primary), 0 20px 48px rgba(0, 0, 0, 0.5) !important;
+  border-color: rgba(129, 140, 248, 0.22) !important;
+  transform: translateY(-6px) !important;
+}
+
+/* Subtle glow on primary buttons in dark mode */
+[data-theme='dark'] button[style*="background: var(--primary)"],
+[data-theme='dark'] a[style*="background: var(--primary)"],
+[data-theme='dark'] button[style*="background: 'var(--primary)'"] {
+  box-shadow: var(--glow-btn) !important;
+}
+
+/* Navbar glow border when scrolled in dark */
+[data-theme='dark'] header {
+  border-bottom-color: rgba(129, 140, 248, 0.12) !important;
+}
+
+/* Subtle text glow on headings in dark */
+[data-theme='dark'] h1 {
+  text-shadow: 0 0 40px rgba(129, 140, 248, 0.15);
+}
+
+/* Community card subtle border pulse in dark */
+[data-theme='dark'] .community-card {
+  border-color: rgba(129, 140, 248, 0.1);
+}
+
+[data-theme='dark'] .community-card:hover {
+  border-color: rgba(129, 140, 248, 0.25) !important;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+}
+
+/* Glassmorphism Classes */
+.glass-effect {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.premium-card {
+  background: var(--bg-card);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.premium-card:hover .card-shine {
+  left: 100%;
+}
+
+.premium-card:hover img {
+  transform: scale(1.1);
+}
+
+.premium-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.premium-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Responsive Grid */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* Angular Motion / Shine Effect for Ads */
+@keyframes angularShine {
+  0% { transform: translateX(-100%) skew(-15deg); }
+  50%, 100% { transform: translateX(200%) skew(-15deg); }
+}
+
+.live-ad-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow);
+}
+
+.live-ad-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+  animation: angularShine 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Mobile App Feel & Global Responsiveness */
+@media (max-width: 768px) {
+  body, html {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .book-grid {
+    grid-template-columns: 1fr !important;
+    padding: 1rem !important;
+    gap: 1rem !important;
+  }
+  
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  nav {
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .premium-card {
+    border-radius: 15px !important;
+    padding: 1.25rem !important;
+  }
+  
+  .glass-effect {
+    backdrop-filter: blur(8px);
+    padding: 2rem 1.5rem !important;
+  }
+
+  /* Force main content wrappers to not have excessive padding */
+  main, .page-container, div[style*="max-width: 1400px"] {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Convert grids that hardcode 320px down to screen width minus padding */
+  div[style*="minmax(320px"] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+

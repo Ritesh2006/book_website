@@ -1,0 +1,336 @@
+/* =============================================
+   BookHaven — Professional Mobile Responsive CSS
+   ============================================= */
+
+/* ---- Base Mobile Reset ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ---- Book Grid ---- */
+@media (max-width: 900px) {
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .book-grid {
+    grid-template-columns: repeat(1, 1fr) !important;
+    gap: 1rem !important;
+  }
+}
+
+/* ---- Main Layout Padding ---- */
+@media (max-width: 768px) {
+  main {
+    padding: 0 1rem !important;
+  }
+  
+  section {
+    padding: 0 1rem !important;
+  }
+}
+
+/* ---- Hero Section ---- */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 1.25rem !important;
+    text-align: center;
+  }
+
+  .hero-section h1 {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+  }
+
+  .hero-section p {
+    font-size: 1rem !important;
+    max-width: 100% !important;
+  }
+
+  .hero-buttons {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
+  .hero-buttons a,
+  .hero-buttons button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ---- Live Ad Section ---- */
+@media (max-width: 900px) {
+  .live-ad-container {
+    padding: 1.75rem !important;
+    border-radius: 20px !important;
+  }
+
+  .live-ad-container h3 {
+    font-size: 1.75rem !important;
+  }
+
+  .live-ad-container .ad-inner-layout {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  .live-ad-container .ad-image-wrapper {
+    height: 220px !important;
+    min-width: unset !important;
+    width: 100% !important;
+  }
+}
+
+/* ---- Book Cards ---- */
+@media (max-width: 600px) {
+  .premium-card {
+    border-radius: 16px !important;
+  }
+}
+
+/* ---- User Dashboard ---- */
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ---- Login Page ---- */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.5rem !important;
+    border-radius: 24px !important;
+  }
+
+  .login-card h2 {
+    font-size: 1.75rem !important;
+  }
+}
+
+/* ---- Community Page ---- */
+@media (max-width: 768px) {
+  .community-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ---- Research Papers ---- */
+@media (max-width: 768px) {
+  .research-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ---- Mobile Drawer Upgrade ---- */
+.mobile-drawer {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-main);
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.mobile-drawer-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  background: var(--bg-card);
+  color: var(--primary);
+}
+
+.mobile-nav-link svg {
+  color: var(--primary);
+}
+
+.mobile-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.75rem 0;
+}
+
+.mobile-user-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.mobile-user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* ---- Mobile Search Overlay Upgrade ---- */
+.mobile-search-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-main);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.mobile-search-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-top: 0.5rem;
+}
+
+.mobile-search-input-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.mobile-search-input-wrap input {
+  width: 100%;
+  padding: 0.9rem 1rem 0.9rem 3rem;
+  border-radius: 14px;
+  border: 1.5px solid var(--primary);
+  background: var(--bg-card);
+  color: var(--text-main);
+  outline: none;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.mobile-search-close {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.8rem;
+  border-radius: 14px;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-search-result {
+  padding: 0.85rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.mobile-search-result:active {
+  opacity: 0.7;
+}
+
+/* ---- Bottom Nav Bar for Mobile ---- */
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex !important;
+  }
+}
+
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  z-index: 900;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 1rem;
+  padding-bottom: env(safe-area-inset-bottom);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.bottom-nav-item.active,
+.bottom-nav-item:hover {
+  color: var(--primary);
+}
+
+/* Extra bottom padding for pages when bottom nav is active */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 70px;
+  }
+}
+
+/* ---- Smooth Scrolling & Touch Improvements ---- */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a {
+  touch-action: manipulation;
+}
+
+input, textarea {
+  -webkit-appearance: none;
+  font-size: 16px; /* Prevents iOS zoom on focus */
+}
