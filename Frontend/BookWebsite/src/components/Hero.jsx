@@ -64,7 +64,7 @@ const Hero = () => {
       </div>
 
       {/* Hero Content */}
-      <div style={{ 
+      <div className="hero-content" style={{ 
         position: 'relative', 
         zIndex: 2, 
         maxWidth: '1000px', 
@@ -75,6 +75,7 @@ const Hero = () => {
         alignItems: 'center'
       }}>
         <motion.div 
+          className="hero-badge"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           style={{ 
@@ -97,6 +98,7 @@ const Hero = () => {
         </motion.div>
 
         <motion.h1 
+          className="hero-title"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -117,6 +119,7 @@ const Hero = () => {
         </motion.h1>
 
         <motion.p 
+          className="hero-subtitle"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -133,6 +136,7 @@ const Hero = () => {
         </motion.p>
 
         <motion.div 
+          className="hero-buttons"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}

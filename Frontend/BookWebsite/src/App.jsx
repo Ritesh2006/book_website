@@ -112,8 +112,8 @@ const App = () => {
             >
               <Hero />
               <BookSlider books={books} />
-              <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+              <main className="main-content" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
+                <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Essential Books</h2>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.25rem' }}>

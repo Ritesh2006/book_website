@@ -10,7 +10,7 @@ const BookCard = ({ book }) => {
       className="premium-card" 
       style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
     >
-      <div style={{ position: 'relative', height: '350px', backgroundColor: '#f1f5f9', overflow: 'hidden' }}>
+      <div className="book-card-image" style={{ position: 'relative', height: '350px', backgroundColor: '#f1f5f9', overflow: 'hidden' }}>
         <img 
           src={book.coverImage || 'https://placehold.co/400x600/1e293b/FFFFFF/png?text=No+Cover'} 
           alt={book.title}
@@ -55,19 +55,20 @@ const BookCard = ({ book }) => {
         </div>
       </div>
       
-      <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div className="book-card-content" style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>
           {book.category || 'General'}
         </span>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem', lineHeight: 1.3 }}>{book.title}</h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>by {book.author}</p>
+        <h3 className="book-title" style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem', lineHeight: 1.3 }}>{book.title}</h3>
+        <p className="book-author" style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>by {book.author}</p>
         
-        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="book-card-footer" style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Price</span>
             <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#10b981' }}>FREE</span>
           </div>
           <motion.button 
+            className="book-card-button"
             onClick={() => window.open(book.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank')}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}

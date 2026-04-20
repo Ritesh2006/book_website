@@ -37,20 +37,18 @@
 
 /* ---- Hero Section ---- */
 @media (max-width: 768px) {
-  .hero-section {
+  .hero-content {
     padding: 3rem 1.25rem !important;
     text-align: center;
   }
 
-  .hero-section h1, 
-  div[style*="fontSize: 'clamp(3rem, 8vw, 6rem)'"] {
-    font-size: clamp(2rem, 10vw, 3.5rem) !important;
-    line-height: 1.2 !important; /* Proper gap between words */
-    letter-spacing: -1px !important; /* Prevent overlapping letters */
+  .hero-title {
+    font-size: clamp(2.5rem, 10vw, 3.5rem) !important;
+    line-height: 1.1 !important; 
+    letter-spacing: -1px !important; 
   }
 
-  .hero-section p,
-  div[style*="fontSize: '1.4rem'"] {
+  .hero-subtitle {
     font-size: 1rem !important;
     max-width: 100% !important;
     line-height: 1.5 !important;
@@ -98,15 +96,15 @@
     border-radius: 12px !important;
   }
   
-  .premium-card div[style*="height: 350px"] {
+  .premium-card .book-card-image {
     height: 180px !important; /* Shorter cover for 2-column view */
   }
 
-  .premium-card div[style*="padding: 1.5rem"] {
+  .premium-card .book-card-content {
     padding: 0.5rem 0.4rem !important; /* Ultra-tight padding */
   }
 
-  .premium-card h3 {
+  .premium-card .book-title {
     font-size: 0.85rem !important;
     margin-bottom: 0.1rem !important;
     height: 2.2rem !important; /* Fixed height for title alignment */
@@ -116,7 +114,7 @@
     overflow: hidden;
   }
 
-  .premium-card p {
+  .premium-card .book-author {
     font-size: 0.7rem !important;
     margin-bottom: 0.4rem !important;
     white-space: nowrap;
@@ -125,20 +123,20 @@
   }
 
   /* Footer Adjustment */
-  .premium-card div[style*="justify-content: space-between"] {
+  .premium-card .book-card-footer {
     flex-direction: row !important;
     align-items: center !important;
     gap: 0.1rem !important;
     padding-top: 0.4rem !important;
   }
 
-  .premium-card button {
+  .premium-card .book-card-button {
     padding: 0.4rem 0.4rem !important; /* Tiny button */
     font-size: 0.65rem !important;
     gap: 0.2rem !important;
   }
 
-  .premium-card button svg {
+  .premium-card .book-card-button svg {
     width: 12px !important;
     height: 12px !important;
   }
