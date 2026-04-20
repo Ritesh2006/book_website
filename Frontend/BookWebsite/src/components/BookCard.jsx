@@ -31,22 +31,25 @@ const BookCard = ({ book }) => {
           transition: 'all 0.5s'
         }} className="card-shine" />
         
-        <div style={{
-          position: 'absolute',
-          top: '1rem',
-          right: '1rem',
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(4px)',
-          padding: '0.4rem 0.6rem',
-          borderRadius: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.3rem',
-          fontSize: '0.85rem',
-          fontWeight: 800,
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          color: '#0f172a'
-        }}>
+        <div 
+          className="card-rating-tag"
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(4px)',
+            padding: '0.4rem 0.6rem',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.3rem',
+            fontSize: '0.85rem',
+            fontWeight: 800,
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            color: '#0f172a'
+          }}
+        >
           <Star size={14} fill="#fbbf24" color="#fbbf24" />
           {book.rating || '4.5'}
         </div>
