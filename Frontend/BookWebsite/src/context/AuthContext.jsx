@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     // Check if the secure HTTPOnly cookie is valid and loads the user role
     const verifySession = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/me`);
         setUser(res.data.user);
       } catch (err) {
         setUser(null);
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/login`, { email, password });
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/login`, { email, password });
       setUser(res.data.user);
       return { success: true, role: res.data.user.role };
     } catch (err) {
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/register`, { name, email, password });
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/register`, { name, email, password });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.response?.data?.message || 'Registration Failed' };
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
 
   const googleLogin = async (credential) => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/google-login`, { token: credential });
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/google-login`, { token: credential });
       setUser(res.data.user);
       return { success: true, role: res.data.user.role };
     } catch (err) {
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/logout`);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/logout`);
       setUser(null);
     } catch (err) {
       console.error('Logout error', err);

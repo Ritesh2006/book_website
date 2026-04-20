@@ -14,7 +14,7 @@ const SubscriptionBox = () => {
     
     setStatus('loading');
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/subscribe`, { email, name });
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/subscribe`, { email, name });
       setStatus('success');
       setMessage(res.data.message);
       setEmail('');

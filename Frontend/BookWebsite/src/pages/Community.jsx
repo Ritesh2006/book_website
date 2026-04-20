@@ -21,7 +21,7 @@ const Community = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/posts`);
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/posts`);
       setPosts(res.data || []);
       setLoading(false);
     } catch (err) {
@@ -53,7 +53,7 @@ const Community = () => {
     };
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/posts`, postData);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/posts`, postData);
       setNewPostContent('');
       setShowCreateModal(false);
       fetchPosts();

@@ -21,10 +21,10 @@ const Admin = () => {
 
   const fetchAdminData = async () => {
     try {
-      const bRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/books?limit=100`);
+      const bRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/books?limit=100`);
       setBooks(bRes.data.books || []);
       
-      const uRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users`);
+      const uRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users`);
       setUsers(uRes.data || []);
       
       setLoading(false);
@@ -41,7 +41,7 @@ const Admin = () => {
   const handleAddBook = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/books`, newBook);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/books`, newBook);
       alert('Book added successfully!');
       setShowAddModal(false);
       fetchAdminData();
