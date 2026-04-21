@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const { sendWelcomeEmail, sendLoginAlert } = require('../utils/emailService');
+const { isDisposableEmail } = require('../utils/securityUtils');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
@@ -16,6 +17,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_bookhaven';
 router.post('/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
+        
+        if (isDisposableEmail(email)) {
+            return res.status(400).json({ message: 'Temporary/Disposable emails are not allowed for registration.' });
+        }
         
         let existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -48,6 +53,11 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        
+        if (isDisposableEmail(email)) {
+             return res.status(400).json({ message: 'Temporary/Disposable emails are not allowed.' });
+        }
+        
         console.log(`Login attempt for: ${email}`);
         
         // Check if the user is the specific admin.
