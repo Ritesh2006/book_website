@@ -1,8 +1,17 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
-// Configure Axios globally to append cookies automatically bypassing LocalStorage
+// Configure Axios globally to append cookies automatically
 axios.defaults.withCredentials = true;
+
+// Add Axios interceptor to attach token from localStorage if available
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 const AuthContext = createContext();
 
@@ -17,6 +26,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       if (err.response?.status === 401) {
         setUser(null);
+        localStorage.removeItem('token'); // Clear if strictly invalid
       }
       console.error("Session check failed:", err.message);
     }
@@ -33,6 +43,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/login`, { email, password });
+      if (res.data.token) localStorage.setItem('token', res.data.token);
       setUser(res.data.user);
       return { success: true, role: res.data.user.role };
     } catch (err) {
@@ -42,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/register`, { name, email, password });
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/register`, { name, email, password });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.response?.data?.message || 'Registration Failed' };
@@ -52,6 +63,7 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = async (credential) => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/google-login`, { token: credential });
+      if (res.data.token) localStorage.setItem('token', res.data.token);
       setUser(res.data.user);
       return { success: true, role: res.data.user.role };
     } catch (err) {
@@ -62,6 +74,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/logout`);
+      localStorage.removeItem('token');
       setUser(null);
     } catch (err) {
       console.error('Logout error', err);

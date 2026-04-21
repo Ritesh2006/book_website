@@ -71,7 +71,11 @@ router.post('/login', async (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
             
-            return res.json({ message: 'Logged in as Admin', user: { email, role: 'admin', name: 'Identity Admin' } });
+            return res.json({ 
+                message: 'Logged in as Admin', 
+                token, 
+                user: { email, role: 'admin', name: 'Identity Admin' } 
+            });
         } 
         
         const user = await User.findOne({ email });
@@ -99,7 +103,11 @@ router.post('/login', async (req, res) => {
         // Send login alert
         sendLoginAlert(email, user.name || 'User').catch(err => console.error('Failed to send login alert:', err));
         
-        return res.json({ message: 'Login successful', user: { email: user.email, role: user.role, name: user.name, picture: user.picture } });
+        return res.json({ 
+            message: 'Login successful', 
+            token, 
+            user: { email: user.email, role: user.role, name: user.name, picture: user.picture } 
+        });
     } catch (err) {
         console.error("Login error:", err);
         return res.status(500).json({ message: 'Server error during login' });
@@ -138,7 +146,7 @@ router.post('/google-login', async (req, res) => {
         // Send login alert
         sendLoginAlert(email, dbUser.name || 'User').catch(err => console.error('Failed to send login alert:', err));
 
-        return res.json({ message: 'Google Verification Successful', user: dbUser });
+        return res.json({ message: 'Google Verification Successful', user: dbUser, token: sessionToken });
     } catch (error) {
         console.error("Google Auth Error:", error);
         return res.status(401).json({ message: 'Google token verification failed' });
@@ -147,7 +155,13 @@ router.post('/google-login', async (req, res) => {
 
 // Middleware to verify session
 const verifyToken = (req, res, next) => {
-    const token = req.cookies.token;
+    let token = req.cookies.token;
+    
+    // Fallback to Authorization Header if cookie is missing (for cross-domain stability)
+    if (!token && req.headers.authorization) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
     if (!token) return res.status(401).json({ message: 'Authentication required' });
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
@@ -158,9 +172,13 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-// @route GET /api/users/me -> Verifies the JWT session via HttpOnly Cookie
+// @route GET /api/users/me -> Verifies the JWT session
 router.get('/me', async (req, res) => {
-    const token = req.cookies.token;
+    let token = req.cookies.token;
+    if (!token && req.headers.authorization) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
     if (!token) return res.status(401).json({ message: 'Not authenticated' });
 
     try {
