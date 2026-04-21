@@ -18,8 +18,15 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password || (!isLogin && !name)) {
-      setError('Please fill in all fields');
+    setError('');
+
+    // Small delay to ensure state is synced if called from weird events
+    const currentEmail = email.trim();
+    const currentPassword = password;
+    const currentName = name.trim();
+
+    if (!currentEmail || !currentPassword || (!isLogin && !currentName)) {
+      setError('Please fill in all fields correctly');
       return;
     }
 

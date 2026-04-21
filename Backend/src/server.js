@@ -11,7 +11,22 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://book-website-1w7b.vercel.app',
+    'https://book-website-ritesh.vercel.app' // Optional fallback
+];
+
+app.use(cors({ 
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true 
+}));
 app.use(express.json());
 app.use(cookieParser());
 
