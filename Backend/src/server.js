@@ -20,6 +20,7 @@ app.use('/api/books', require('./routes/bookRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/posts', require('./routes/communityRoutes'));
+app.use('/api/papers', require('./routes/paperRoutes'));
 
 // Basic route
 app.get('/', (req, res) => {
