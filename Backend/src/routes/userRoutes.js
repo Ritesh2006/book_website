@@ -145,16 +145,118 @@ router.post('/google-login', async (req, res) => {
     }
 });
 
+// Middleware to verify session
+const verifyToken = (req, res, next) => {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: 'Authentication required' });
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+};
+
 // @route GET /api/users/me -> Verifies the JWT session via HttpOnly Cookie
-router.get('/me', (req, res) => {
+router.get('/me', async (req, res) => {
     const token = req.cookies.token;
     if (!token) return res.status(401).json({ message: 'Not authenticated' });
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        res.json({ user: { email: decoded.email, role: decoded.role } });
+        const user = await User.findById(decoded.id).populate('readingProgress.bookId').populate('readingProgress.paperId');
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.json({ user });
     } catch (err) {
         res.status(401).json({ message: 'Invalid token' });
+    }
+});
+
+// @route PUT /api/users/profile
+router.put('/profile', verifyToken, async (req, res) => {
+    try {
+        const { name, bio, location, picture } = req.body;
+        const user = await User.findByIdAndUpdate(
+            req.user.id,
+            { name, bio, location, picture },
+            { new: true }
+        );
+        res.json({ message: 'Profile updated', user });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to update profile' });
+    }
+});
+
+// @route POST /api/users/reading-progress
+router.post('/reading-progress', verifyToken, async (req, res) => {
+    try {
+        const { bookId, paperId, progress, status } = req.body;
+        const user = await User.findById(req.user.id);
+        
+        const existing = user.readingProgress.find(p => 
+            (bookId && p.bookId?.toString() === bookId) || 
+            (paperId && p.paperId?.toString() === paperId)
+        );
+
+        if (existing) {
+            existing.progress = progress || existing.progress;
+            existing.status = status || existing.status;
+            existing.lastRead = Date.now();
+        } else {
+            user.readingProgress.push({ bookId, paperId, progress, status, lastRead: Date.now() });
+        }
+
+        await user.save();
+        res.json({ message: 'Progress saved', readingProgress: user.readingProgress });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to save progress' });
+    }
+});
+
+// @route POST /api/users/support
+router.post('/support', verifyToken, async (req, res) => {
+    try {
+        const { subject, message } = req.body;
+        const user = await User.findById(req.user.id);
+        
+        // Use nodemailer to send support request to admin
+        const nodemailer = require('nodemailer');
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_USER, // Send to self (admin)
+            subject: `SUPPORT REQUEST: ${subject}`,
+            html: `
+                <h3>New Support Request from ${user.name}</h3>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Subject:</strong> ${subject}</p>
+                <p><strong>Message:</strong></p>
+                <div style="padding: 1rem; background: #f4f4f4; border-radius: 8px;">${message}</div>
+            `
+        });
+
+        res.json({ message: 'Support request sent! We will contact you soon.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to send support request' });
+    }
+});
+
+// @route DELETE /api/users/delete-account
+router.delete('/delete-account', verifyToken, async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.user.id);
+        res.clearCookie('token');
+        res.json({ message: 'Account deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to delete account' });
     }
 });
 

@@ -10,16 +10,19 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const checkUser = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/me`);
+      setUser(res.data.user);
+    } catch (err) {
+      setUser(null);
+    }
+  };
+
   useEffect(() => {
-    // Check if the secure HTTPOnly cookie is valid and loads the user role
     const verifySession = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/me`);
-        setUser(res.data.user);
-      } catch (err) {
-        setUser(null);
-      }
-      setLoading(false); // Finished checking
+      await checkUser();
+      setLoading(false);
     };
     verifySession();
   }, []);
@@ -63,7 +66,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, logout, checkUser }}>
       {children}
     </AuthContext.Provider>
   );

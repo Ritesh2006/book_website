@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, ExternalLink, Download, Search, Loader2 } from 'lucide-react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const ResearchPapers = () => {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,75 +94,7 @@ const ResearchPapers = () => {
           }}
         >
           {filteredPapers.length > 0 ? filteredPapers.map((paper) => (
-            <motion.div 
-              key={paper._id || paper.id} 
-              variants={itemVariants}
-              whileHover={{ y: -5 }}
-              className="premium-card" 
-              style={{ 
-                padding: '1.5rem', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                background: 'var(--bg-card)',
-                borderRadius: '16px',
-                border: '1px solid var(--border)',
-                boxShadow: 'var(--shadow)'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-                <div style={{ 
-                  background: 'var(--primary)', 
-                  color: 'white', 
-                  padding: '0.8rem', 
-                  borderRadius: '12px' 
-                }}>
-                  <FileText size={24} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {paper.field} • {paper.year}
-                  </span>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginTop: '0.25rem', lineHeight: 1.3 }}>
-                    {paper.title}
-                  </h3>
-                </div>
-              </div>
-              
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.6 }}>
-                {paper.description}
-              </p>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 600 }}>{paper.author}</span>
-                <button 
-                  onClick={() => window.open(paper.pdfUrl, '_blank')}
-                  style={{
-                    background: 'transparent',
-                    color: 'var(--primary)',
-                    border: '1px solid var(--primary)',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.background = 'var(--primary)';
-                    e.currentTarget.style.color = 'white';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'var(--primary)';
-                  }}
-                >
-                  Read PDF <ExternalLink size={16} />
-                </button>
-              </div>
-            </motion.div>
+            <PaperCard key={paper._id || paper.id} paper={paper} user={user} />
           )) : (
             <div style={{ gridColumn: '1 / -1', padding: '4rem', textAlign: 'center', background: 'var(--bg-card)', borderRadius: '16px', border: '1px dashed var(--border)' }}>
                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-muted)' }}>No research papers found.</h3>
@@ -172,4 +106,97 @@ const ResearchPapers = () => {
   );
 };
 
+const PaperCard = ({ paper, user }) => {
+  const handleRead = async () => {
+    window.open(paper.pdfUrl, '_blank');
+    if (user && paper._id) {
+      try {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/reading-progress`, {
+          paperId: paper._id,
+          progress: 50,
+          status: 'Reading'
+        });
+      } catch (err) {}
+    }
+  };
+
+  return (
+    <motion.div 
+      key={paper._id || paper.id} 
+      variants={itemVariants}
+      whileHover={{ y: -5 }}
+      className="premium-card" 
+      style={{ 
+        padding: '1.5rem', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        background: 'var(--bg-card)',
+        borderRadius: '16px',
+        border: '1px solid var(--border)',
+        boxShadow: 'var(--shadow)'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
+        <div style={{ 
+          background: 'var(--primary)', 
+          color: 'white', 
+          padding: '0.8rem', 
+          borderRadius: '12px' 
+        }}>
+          <FileText size={24} />
+        </div>
+        <div>
+          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            {paper.field} • {paper.year}
+          </span>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginTop: '0.25rem', lineHeight: 1.3 }}>
+            {paper.title}
+          </h3>
+        </div>
+      </div>
+      
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.6 }}>
+        {paper.description}
+      </p>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+        <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 600 }}>{paper.author}</span>
+        <button 
+          onClick={handleRead}
+          style={{
+            background: 'transparent',
+            color: 'var(--primary)',
+            border: '1px solid var(--primary)',
+            padding: '0.5rem 1rem',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.background = 'var(--primary)';
+            e.currentTarget.style.color = 'white';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.color = 'var(--primary)';
+          }}
+        >
+          Read PDF <ExternalLink size={16} />
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', bounce: 0.4 } }
+};
+
 export default ResearchPapers;
+

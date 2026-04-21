@@ -1,8 +1,30 @@
 import React from 'react';
 import { Star, Download, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const BookCard = ({ book }) => {
+  const { user } = useAuth();
+
+  const handleRead = async () => {
+    // Open PDF
+    window.open(book.pdfUrl || 'https://archive.org/download/janeeyre01bron/janeeyre01bron.pdf', '_blank');
+    
+    // Record progress if logged in
+    if (user && book._id) {
+      try {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/reading-progress`, {
+          bookId: book._id,
+          progress: 50, // Default to 50% when opened
+          status: 'Reading'
+        });
+      } catch (err) {
+        console.error("Failed to record progress");
+      }
+    }
+  };
+
   return (
     <motion.div 
       whileHover={{ y: -10 }}
@@ -69,7 +91,7 @@ const BookCard = ({ book }) => {
           </div>
           <motion.button 
             className="book-card-button"
-            onClick={() => window.open(book.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank')}
+            onClick={handleRead}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             style={{
@@ -81,7 +103,8 @@ const BookCard = ({ book }) => {
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              fontSize: '0.9rem'
+              fontSize: '0.9rem',
+              cursor: 'pointer'
             }}>
             Read PDF <ExternalLink size={16} />
           </motion.button>
@@ -92,3 +115,4 @@ const BookCard = ({ book }) => {
 };
 
 export default BookCard;
+
