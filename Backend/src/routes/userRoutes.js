@@ -175,6 +175,9 @@ router.get('/me', async (req, res) => {
                     role: 'admin', 
                     name: 'Identity Admin',
                     picture: 'A',
+                    bio: 'System Administrator',
+                    location: 'Global',
+                    createdAt: new Date('2026-01-01'), // Fixed date for admin
                     readingProgress: [] 
                 } 
             });

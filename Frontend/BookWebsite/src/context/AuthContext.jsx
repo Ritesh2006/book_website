@@ -13,9 +13,12 @@ export const AuthProvider = ({ children }) => {
   const checkUser = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/me`);
-      setUser(res.data.user);
+      if (res.data.user) setUser(res.data.user);
     } catch (err) {
-      setUser(null);
+      if (err.response?.status === 401) {
+        setUser(null);
+      }
+      console.error("Session check failed:", err.message);
     }
   };
 
