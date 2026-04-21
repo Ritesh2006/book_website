@@ -165,6 +165,21 @@ router.get('/me', async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
+        
+        // Handle hardcoded admin case
+        if (decoded.id === 1) {
+            return res.json({ 
+                user: { 
+                    _id: 1, 
+                    email: 'admin@bookhaven.com', 
+                    role: 'admin', 
+                    name: 'Identity Admin',
+                    picture: 'A',
+                    readingProgress: [] 
+                } 
+            });
+        }
+
         const user = await User.findById(decoded.id).populate('readingProgress.bookId').populate('readingProgress.paperId');
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json({ user });
