@@ -17,6 +17,11 @@ const UserDashboard = () => {
     picture: ''
   });
 
+  const [supportData, setSupportData] = useState({
+    subject: '',
+    message: ''
+  });
+
   useEffect(() => {
     if (user) {
       setProfileData({
