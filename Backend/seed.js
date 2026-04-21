@@ -13,7 +13,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.9, 
     coverImage: "https://covers.openlibrary.org/b/id/14312836-L.jpg",
-    pdfUrl: "https://archive.org/download/prideprejudice00aust/prideprejudice00aust.pdf"
+    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
   },
   { 
     title: "The Adventures of Sherlock Holmes", 
@@ -21,7 +21,7 @@ const mockBooks = [
     category: "Mystery", 
     rating: 4.8, 
     coverImage: "https://covers.openlibrary.org/b/id/12832264-L.jpg",
-    pdfUrl: "https://archive.org/download/adventuresifsher00doyluoft/adventuresifsher00doyluoft.pdf"
+    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
   },
   { 
     title: "Moby-Dick", 
@@ -29,7 +29,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.5, 
     coverImage: "https://covers.openlibrary.org/b/id/12660057-L.jpg",
-    pdfUrl: "https://archive.org/download/mobydickorwhale00melvuoft/mobydickorwhale00melvuoft.pdf"
+    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
   },
   { 
     title: "Dracula", 
@@ -37,7 +37,7 @@ const mockBooks = [
     category: "Horror", 
     rating: 4.7, 
     coverImage: "https://covers.openlibrary.org/b/id/14421115-L.jpg",
-    pdfUrl: "https://archive.org/download/dracula00stok/dracula00stok.pdf"
+    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
   },
   { 
     title: "Alice in Wonderland", 
@@ -45,7 +45,7 @@ const mockBooks = [
     category: "Fantasy", 
     rating: 4.9, 
     coverImage: "https://covers.openlibrary.org/b/id/14101292-L.jpg",
-    pdfUrl: "https://archive.org/download/alicesadventure00carrgoog/alicesadventure00carrgoog.pdf"
+    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
   },
   { 
     title: "The Picture of Dorian Gray", 
@@ -53,7 +53,7 @@ const mockBooks = [
     category: "Philosophy", 
     rating: 4.6, 
     coverImage: "https://covers.openlibrary.org/b/id/12668541-L.jpg",
-    pdfUrl: "https://archive.org/download/pictureofdoriang00wild_0/pictureofdoriang00wild_0.pdf"
+    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
   },
   { 
     title: "Wuthering Heights", 
@@ -61,7 +61,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.5, 
     coverImage: "https://covers.openlibrary.org/b/id/10543209-L.jpg",
-    pdfUrl: "https://archive.org/download/wutheringheights01bron_1/wutheringheights01bron_1.pdf"
+    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
   },
   { 
     title: "Great Expectations", 
@@ -69,7 +69,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.8, 
     coverImage: "https://covers.openlibrary.org/b/id/12586617-L.jpg",
-    pdfUrl: "https://archive.org/download/greatexpectation00dick/greatexpectation00dick.pdf"
+    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
   },
   { 
     title: "The Adventures of Tom Sawyer", 
@@ -77,7 +77,7 @@ const mockBooks = [
     category: "Adventure", 
     rating: 4.7, 
     coverImage: "https://covers.openlibrary.org/b/id/12569438-L.jpg",
-    pdfUrl: "https://archive.org/download/74-pdf/74-pdf.pdf"
+    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
   },
   { 
     title: "Jane Eyre", 
@@ -85,7 +85,7 @@ const mockBooks = [
     category: "Romance", 
     rating: 4.9, 
     coverImage: "https://covers.openlibrary.org/b/id/12674393-L.jpg",
-    pdfUrl: "https://archive.org/download/janeeyre01bron/janeeyre01bron.pdf"
+    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
   },
   { 
     title: "The War of the Worlds", 
@@ -93,7 +93,7 @@ const mockBooks = [
     category: "Sci-Fi", 
     rating: 4.6, 
     coverImage: "https://covers.openlibrary.org/b/id/12644265-L.jpg",
-    pdfUrl: "https://archive.org/download/warofworlds00well/warofworlds00well.pdf"
+    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
   },
   { 
     title: "Metamorphosis", 
@@ -101,7 +101,7 @@ const mockBooks = [
     category: "Philosophy", 
     rating: 4.5, 
     coverImage: "https://covers.openlibrary.org/b/id/13101683-L.jpg",
-    pdfUrl: "https://archive.org/download/metamorphosis00kafk/metamorphosis00kafk.pdf"
+    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
   }
 ];
 

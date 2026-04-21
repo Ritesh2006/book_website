@@ -5,9 +5,10 @@ const BookSchema = new mongoose.Schema({
     author: { type: String, required: true },
     description: { type: String },
     coverImage: { type: String }, // URL to image
+    pdfUrl: { type: String }, // URL to the PDF file
     category: { type: String },
-    price: { type: Number, default: 0 }, // All set to 0 as per user request
-    rating: { type: Number, default: 0 },
+    price: { type: Number, default: 0 }, 
+    rating: { type: Number, default: 4.5 },
     pages: { type: Number },
     publishedDate: { type: String },
 }, { timestamps: true });

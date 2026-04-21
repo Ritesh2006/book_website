@@ -50,8 +50,14 @@ router.get('/search', async (req, res) => {
     }
 });
 
-// @route POST /api/books (Seed data)
+// @route POST /api/books
 router.post('/', bookController.addBook);
+
+// @route PUT /api/books/:id
+router.put('/:id', bookController.updateBook);
+
+// @route DELETE /api/books/:id
+router.delete('/:id', bookController.deleteBook);
 
 // @route POST /api/books/chat (AI Chatbot)
 router.post('/chat', (req, res) => {

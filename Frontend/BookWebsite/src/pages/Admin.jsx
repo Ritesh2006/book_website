@@ -17,7 +17,7 @@ const Admin = () => {
   // Form States
   const [newBook, setNewBook] = useState({
     title: '', author: '', category: 'Classic', 
-    description: '', coverImage: '', downloadUrl: '#'
+    description: '', coverImage: '', pdfUrl: ''
   });
 
   const [newPaper, setNewPaper] = useState({
@@ -250,6 +250,7 @@ const Admin = () => {
                     <div><input required value={newBook.author} onChange={e=>setNewBook({...newBook, author:e.target.value})} placeholder="Author" style={inputStyle} /></div>
                     <div><select value={newBook.category} onChange={e=>setNewBook({...newBook, category:e.target.value})} style={inputStyle}>{categories.map(c=><option key={c}>{c}</option>)}</select></div>
                     <div style={{ gridColumn: 'span 2' }}><input required value={newBook.coverImage} onChange={e=>setNewBook({...newBook, coverImage:e.target.value})} placeholder="Image URL" style={inputStyle} /></div>
+                    <div style={{ gridColumn: 'span 2' }}><input required value={newBook.pdfUrl} onChange={e=>setNewBook({...newBook, pdfUrl:e.target.value})} placeholder="PDF Link (e.g. google drive or direct link)" style={inputStyle} /></div>
                   </>
                 ) : (
                   <>

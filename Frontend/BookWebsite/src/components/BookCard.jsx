@@ -9,7 +9,8 @@ const BookCard = ({ book }) => {
 
   const handleRead = async () => {
     // Open PDF
-    window.open(book.pdfUrl || 'https://archive.org/download/janeeyre01bron/janeeyre01bron.pdf', '_blank');
+    const demoPdf = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+    window.open(book.pdfUrl || demoPdf, '_blank');
     
     // Record progress if logged in
     if (user && book._id) {

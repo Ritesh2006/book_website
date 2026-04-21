@@ -11,14 +11,26 @@ const UserDashboard = () => {
   
   // Settings Form State
   const [profileData, setProfileData] = useState({
-    name: user?.name || '',
-    bio: user?.bio || '',
-    location: user?.location || '',
-    picture: user?.picture || ''
+    name: '',
+    bio: '',
+    location: '',
+    picture: ''
   });
 
-  // Support Form State
-  const [supportData, setSupportData] = useState({ subject: '', message: '' });
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        name: user.name || '',
+        bio: user.bio || '',
+        location: user.location || '',
+        picture: user.picture || ''
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    checkUser(); // Sync with DB on dashboard enter
+  }, []);
 
   const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com';
 

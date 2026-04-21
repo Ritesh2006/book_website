@@ -108,7 +108,8 @@ const ResearchPapers = () => {
 
 const PaperCard = ({ paper, user }) => {
   const handleRead = async () => {
-    window.open(paper.pdfUrl, '_blank');
+    const demoPdf = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+    window.open(paper.pdfUrl || demoPdf, '_blank');
     if (user && paper._id) {
       try {
         await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/reading-progress`, {
