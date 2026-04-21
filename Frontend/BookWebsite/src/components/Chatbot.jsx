@@ -112,114 +112,112 @@ const Chatbot = () => {
               position: 'fixed', bottom: '1rem', right: '1rem',
               width: 'calc(100vw - 2rem)', maxWidth: '400px',
               height: 'calc(100vh - 6rem)', maxHeight: '650px',
-              background: 'rgba(255, 255, 255, 0.95)', borderRadius: '32px',
-              backdropFilter: 'blur(20px)',
-              boxShadow: '0 40px 80px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)',
+              background: 'linear-gradient(135deg, #f8faff 0%, #ffffff 100%)', 
+              borderRadius: '32px',
+              backdropFilter: 'blur(30px)',
+              boxShadow: '0 40px 80px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.8)',
               display: 'flex', flexDirection: 'column',
               zIndex: 10000, overflow: 'hidden',
-
+              border: '1px solid rgba(99, 102, 241, 0.1)'
             }}
           >
+            {/* Neural Background Decorator */}
+            <div style={{ position: 'absolute', top: '20%', left: '-10%', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%)', zIndex: 0, pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: '10%', right: '-10%', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(219, 39, 119, 0.03) 0%, transparent 70%)', zIndex: 0, pointerEvents: 'none' }} />
+
             {/* --- PREMIUM HEADER SECTION --- */}
             <div style={{
-              background: 'linear-gradient(135deg, #4f46e5 0%, #9333ea 50%, #db2777 100%)',
-              padding: '2.5rem 2rem 3.5rem', position: 'relative', color: 'white',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+              background: 'rgba(255, 255, 255, 0.7)',
+              padding: '1.75rem 2rem 2.5rem', position: 'relative', color: 'var(--text-main)',
+              borderBottom: '1px solid rgba(0,0,0,0.05)',
+              backdropFilter: 'blur(10px)'
             }}>
-              {/* Shine overlay */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%)', zIndex: 0 }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', position: 'relative', zIndex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '50%', display: 'flex', backdropFilter: 'blur(10px)' }}>
-                    <BookOpen size={22} color="white" strokeWidth={2.5} />
+                  <div style={{ background: 'var(--primary)', padding: '0.5rem', borderRadius: '12px', display: 'flex', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)' }}>
+                    <BookOpen size={20} color="white" strokeWidth={2.5} />
                   </div>
-                  <span style={{ fontWeight: 800, fontSize: '1.3rem', letterSpacing: '-0.5px', textShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>BookHaven.</span>
+                  <span style={{ fontWeight: 800, fontSize: '1.2rem', letterSpacing: '-0.5px', color: 'var(--text-main)' }}>AI Librarian</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ display: 'flex', marginRight: '5px' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', overflow: 'hidden', background: '#ccc', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
-                      <img src={user?.picture || "https://randomuser.me/api/portraits/men/32.jpg"} style={{width:'100%',height:'100%',objectFit:'cover'}} />
-                    </div>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', overflow: 'hidden', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', display:'flex', alignItems:'center', justifyContent:'center', marginLeft:'-14px', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
-                      <Bot size={18} color="white" />
-                    </div>
-                  </div>
-                  <button onClick={() => setIsOpen(false)} style={{ background: 'rgba(255,255,255,0.15)', border:'none', color:'white', width:'36px', height:'36px', borderRadius:'50%', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', backdropFilter: 'blur(5px)', transition: 'background 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(255,255,255,0.3)'} onMouseLeave={(e)=>e.currentTarget.style.background='rgba(255,255,255,0.15)'}>
-                    <X size={20} />
-                  </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(99,102,241,0.08)', padding: '4px 10px', borderRadius: '50px' }}>
+                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }} />
+                      <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase' }}>Online</span>
+                   </div>
+                   <button onClick={() => setIsOpen(false)} style={{ background: 'rgba(0,0,0,0.04)', border:'none', color:'var(--text-muted)', width:'32px', height:'32px', borderRadius:'50%', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition: 'all 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(0,0,0,0.08)'} onMouseLeave={(e)=>e.currentTarget.style.background='rgba(0,0,0,0.04)'}>
+                    <X size={18} />
+                   </button>
                 </div>
               </div>
 
               {activeTab === 'home' && (
-                <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} style={{ position: 'relative', zIndex: 1 }}>
-                  <h1 style={{ fontSize: '2.5rem', fontWeight: 900, margin: 0, lineHeight: 1.1, textShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
-                    Hello {user?.name?.split(' ')[0] || 'Reader'}! <br/>
-                    How can we help?
+                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} style={{ position: 'relative', zIndex: 1 }}>
+                  <h1 style={{ fontSize: '1.75rem', fontWeight: 900, margin: 0, lineHeight: 1.2, color: 'var(--text-main)' }}>
+                    Greetings, {user?.name?.split(' ')[0] || 'Reader'}. <br/>
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 500, fontSize: '0.95rem' }}>Your personal Llama 3 expert is ready.</span>
                   </h1>
                 </motion.div>
               )}
-              {activeTab === 'messages' && <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, position: 'relative', zIndex: 1, textShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>Llama 3 Brain</h1>}
-              {activeTab === 'help' && <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, position: 'relative', zIndex: 1, textShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>Help Center</h1>}
+              {activeTab === 'messages' && <h1 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, position: 'relative', zIndex: 1 }}>Neural Messenger</h1>}
+              {activeTab === 'help' && <h1 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, position: 'relative', zIndex: 1 }}>Support Library</h1>}
             </div>
 
             {/* --- SCROLLABLE CONTENT --- */}
-            <div style={{ flex: 1, margin: '-2.5rem 1rem 0', position: 'relative', zIndex: 2, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', pb: '1rem' }}>
+            <div style={{ flex: 1, margin: '-1rem 0 0', position: 'relative', zIndex: 2, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.5rem 1rem pb 1rem' }}>
               
               {activeTab === 'home' && (
-                <>
-                  <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="premium-card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', background: 'white' }}>
-                    <div style={{ background: '#fef3c7', padding: '0.75rem', borderRadius: '12px', color: '#d97706' }}>
-                      <AlertCircle size={22} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
+                  <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="premium-card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(99,102,241,0.1)' }}>
+                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '0.75rem', borderRadius: '12px', color: '#10b981' }}>
+                      <Zap size={22} />
                     </div>
                     <div>
-                      <p style={{ margin: 0, fontWeight: 800, color: '#1f2937', fontSize: '0.95rem' }}>Status: All Systems Active</p>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: '#6b7280' }}>Llama 3 is online and ready to assist.</p>
+                      <p style={{ margin: 0, fontWeight: 800, color: 'var(--text-main)', fontSize: '0.9rem' }}>High-Speed AI Core</p>
+                      <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>Llama 3.3 is currently under 10ms latency.</p>
                     </div>
                   </motion.div>
 
-                  <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="premium-card" style={{ background: 'white', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ position: 'relative' }}>
-                      <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
-                      <input type="text" placeholder="Search for library help..." style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.8rem', borderRadius: '12px', border: '1px solid #e5e7eb', background: '#f9fafb', fontSize: '0.9rem', outline: 'none' }} />
-                    </div>
-                    
+                  <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="premium-card" style={{ background: 'rgba(255,255,255,0.9)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Quick Actions</h4>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {menuItems.map((item, i) => (
                         <div 
                           key={i} 
                           onClick={() => handleQuickLink(item.label)}
-                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 0', borderBottom: i === menuItems.length - 1 ? 'none' : '1px solid #f3f4f6', cursor: 'pointer' }}
+                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 0', borderBottom: i === menuItems.length - 1 ? 'none' : '1px solid rgba(0,0,0,0.03)', cursor: 'pointer' }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                             {item.icon}
-                            <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#374151' }}>{item.label}</span>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>{item.label}</span>
                           </div>
-                          <ChevronRight size={18} color="#9ca3af" />
+                          <ChevronRight size={16} color="var(--text-muted)" />
                         </div>
                       ))}
                     </div>
                   </motion.div>
-                </>
+                </div>
               )}
 
               {activeTab === 'messages' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0 0.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '1rem 0.5rem' }}>
                   {messages.map((msg, idx) => (
                     <div key={idx} style={{ display: 'flex', justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start', gap: '0.75rem' }}>
-                      {msg.sender === 'bot' && <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', padding: '0.5rem', borderRadius: '10px', color: 'white', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)', flexShrink: 0 }}><Bot size={18} /></div>}
+                      {msg.sender === 'bot' && <div style={{ background: 'var(--bg-card)', padding: '0.5rem', borderRadius: '10px', color: 'var(--primary)', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid rgba(99,102,241,0.1)', flexShrink: 0 }}><Bot size={18} /></div>}
                       <div style={{
-                        background: msg.sender === 'user' ? 'linear-gradient(135deg, #4f46e5 0%, #db2777 100%)' : 'white',
-                        color: msg.sender === 'user' ? 'white' : '#1f2937',
-                        padding: '1rem 1.25rem', borderRadius: msg.sender === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px', maxWidth: '90%', fontSize: '0.95rem', lineHeight: 1.6, boxShadow: msg.sender === 'user' ? '0 8px 20px rgba(219, 39, 119, 0.2)' : '0 4px 15px rgba(0,0,0,0.05)',
-                        border: msg.sender === 'bot' ? '1px solid #f3f4f6' : 'none'
+                        background: msg.sender === 'user' ? 'var(--primary)' : 'rgba(255, 255, 255, 0.9)',
+                        color: msg.sender === 'user' ? 'white' : 'var(--text-main)',
+                        padding: '1rem 1.25rem', borderRadius: msg.sender === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px', maxWidth: '90%', fontSize: '0.95rem', lineHeight: 1.6, 
+                        boxShadow: msg.sender === 'user' ? '0 10px 25px rgba(99, 102, 241, 0.25)' : '0 4px 15px rgba(0,0,0,0.03)',
+                        border: msg.sender === 'bot' ? '1px solid rgba(255,255,255,0.8)' : 'none',
+                        backdropFilter: msg.sender === 'bot' ? 'blur(10px)' : 'none'
                       }}>
                         <ReactMarkdown 
                           components={{
                             p: ({node, ...props}) => <p style={{margin: '0 0 0.5rem 0'}} {...props} />,
                             li: ({node, ...props}) => <li style={{margin: '0.25rem 0'}} {...props} />,
-                            h1: ({node, ...props}) => <h1 style={{fontSize: '1.2rem', fontWeight: 800, margin: '0.75rem 0'}} {...props} />,
-                            h2: ({node, ...props}) => <h2 style={{fontSize: '1.1rem', fontWeight: 800, margin: '0.5rem 0'}} {...props} />,
-                            hr: () => <hr style={{ border: 'none', borderTop: '1px solid #f3f4f6', margin: '0.75rem 0' }} />
+                            h1: ({node, ...props}) => <h1 style={{fontSize: '1.1rem', fontWeight: 800, margin: '0.5rem 0', color: 'var(--primary)'}} {...props} />,
+                            h2: ({node, ...props}) => <h2 style={{fontSize: '1rem', fontWeight: 800, margin: '0.5rem 0'}} {...props} />,
+                            hr: () => <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.05)', margin: '0.75rem 0' }} />
                           }}
                         >
                           {msg.text}
@@ -229,7 +227,7 @@ const Chatbot = () => {
                   ))}
                   {isLoading && (
                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                      <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', padding: '0.5rem', borderRadius: '10px', color: 'white', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Bot size={18} /></div>
+                      <div style={{ background: 'var(--bg-card)', padding: '0.5rem', borderRadius: '10px', color: 'var(--primary)', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Bot size={18} /></div>
                       <TypingIndicator />
                     </div>
                   )}
