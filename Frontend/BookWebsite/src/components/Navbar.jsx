@@ -109,12 +109,11 @@ const Navbar = ({ onSearch }) => {
             </span>
           </Link>
 
-          <div style={{ 
+          <div className="desktop-only" style={{ 
             flex: 1, 
             maxWidth: '500px', 
             margin: '0 2rem',
-            position: 'relative',
-            display: window.innerWidth > 900 ? 'block' : 'none'
+            position: 'relative'
           }}>
             <Search size={18} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input 
@@ -202,7 +201,7 @@ const Navbar = ({ onSearch }) => {
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexShrink: 0 }}>
             
             {/* Desktop Links */}
-            <div style={{ display: window.innerWidth > 900 ? 'flex' : 'none', gap: '1.5rem', alignItems: 'center' }}>
+            <div className="desktop-only" style={{ gap: '1.5rem', alignItems: 'center' }}>
               {navLinks.map((link, idx) => (
                 (!link.private || user) && (
                   <Link 
@@ -226,17 +225,17 @@ const Navbar = ({ onSearch }) => {
               ))}
             </div>
 
-            <div style={{ width: '1px', height: '24px', background: 'var(--border)', display: window.innerWidth > 900 ? 'block' : 'none' }}></div>
+            <div className="desktop-only" style={{ width: '1px', height: '24px', background: 'var(--border)' }}></div>
 
             {/* Mobile Search Toggle */}
             <button 
+              className="mobile-only"
               onClick={() => setIsSearchOpen(!isSearchOpen)} 
               style={{ 
                 background: 'transparent',
                 border: 'none', 
                 color: 'var(--text-main)', 
                 cursor: 'pointer',
-                display: window.innerWidth <= 900 ? 'flex' : 'none',
                 alignItems: 'center',
                 justifyContent: 'center',
                 opacity: 0.8
@@ -266,7 +265,7 @@ const Navbar = ({ onSearch }) => {
             </button>
 
             {/* Desktop Auth */}
-            <div style={{ display: window.innerWidth > 768 ? 'flex' : 'none', alignItems: 'center', gap: '1rem' }}>
+            <div className="desktop-only" style={{ alignItems: 'center', gap: '1rem' }}>
               {user?.role === 'admin' && (
                 <Link to="/admin" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--primary)', fontWeight: 700, fontSize: '0.9rem', padding: '0.5rem 1rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '12px', textDecoration: 'none' }}>
                   <Shield size={16} /> Admin
@@ -320,7 +319,7 @@ const Navbar = ({ onSearch }) => {
             </div>
 
             {/* Mobile Menu Icon */}
-            <div style={{ display: window.innerWidth <= 768 ? 'block' : 'none' }}>
+            <div className="mobile-only">
               <button 
                 onClick={() => setIsOpen(!isOpen)}
                 style={{ 
