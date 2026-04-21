@@ -370,8 +370,32 @@
 /* Extra bottom padding for pages when bottom nav is active */
 @media (max-width: 768px) {
   body {
-    padding-bottom: 70px;
+    padding-bottom: 90px !important;
   }
+}
+
+.responsive-dashboard-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .responsive-dashboard-grid {
+    grid-template-columns: 70% 30% !important;
+  }
+}
+
+/* Fix bottom-nav-item alignment */
+.bottom-nav-item {
+  flex: 1;
+  max-width: 80px;
+  justify-content: center;
+  padding: 0.5rem 0 !important;
+}
+
+.bottom-nav-item span {
+  font-size: 0.65rem !important;
+  width: 100%;
+  text-align: center;
 }
 
 /* ---- Smooth Scrolling & Touch Improvements ---- */

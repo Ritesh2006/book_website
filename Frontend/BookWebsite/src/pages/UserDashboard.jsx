@@ -113,7 +113,7 @@ const UserDashboard = () => {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '70% 30%', gap: '2rem' }}>
+      <div className="responsive-dashboard-grid" style={{ display: 'grid', gap: '2rem' }}>
         {/* LEFT: PROGRESS */}
         <div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '2rem' }}>Continue Reading</h2>
