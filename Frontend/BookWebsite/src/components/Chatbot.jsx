@@ -9,13 +9,15 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+import ReactMarkdown from 'react-markdown';
+
 const Chatbot = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('home'); // 'home', 'messages', 'help'
   const [messages, setMessages] = useState([
-    { text: "Hello! I am your Llama 3 AI Librarian. How can I help you discover something new today?", sender: 'bot' }
+    { text: "Hello! I am your **Llama 3 AI Librarian**. How can I help you discover something new today?", sender: 'bot' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -72,6 +74,14 @@ const Chatbot = () => {
     { label: "Contact our human librarian", icon: <User size={18} color="#10b981" /> },
     { label: "How to download PDFs on mobile", icon: <Globe size={18} color="#ec4899" /> }
   ];
+
+  const TypingIndicator = () => (
+    <div style={{ display: 'flex', gap: '4px', padding: '12px 16px', background: 'white', borderRadius: '15px', width: 'fit-content', border: '1px solid #f3f4f6' }}>
+      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 0.6 }} style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary)' }} />
+      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary)' }} />
+      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary)' }} />
+    </div>
+  );
 
   return (
     <>
@@ -196,18 +206,33 @@ const Chatbot = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0 0.5rem' }}>
                   {messages.map((msg, idx) => (
                     <div key={idx} style={{ display: 'flex', justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start', gap: '0.75rem' }}>
-                      {msg.sender === 'bot' && <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', padding: '0.5rem', borderRadius: '10px', color: 'white', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)' }}><Bot size={18} /></div>}
+                      {msg.sender === 'bot' && <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', padding: '0.5rem', borderRadius: '10px', color: 'white', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)', flexShrink: 0 }}><Bot size={18} /></div>}
                       <div style={{
                         background: msg.sender === 'user' ? 'linear-gradient(135deg, #4f46e5 0%, #db2777 100%)' : 'white',
                         color: msg.sender === 'user' ? 'white' : '#1f2937',
-                        padding: '1rem 1.25rem', borderRadius: msg.sender === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px', maxWidth: '85%', fontSize: '0.95rem', lineHeight: 1.5, boxShadow: msg.sender === 'user' ? '0 8px 20px rgba(219, 39, 119, 0.2)' : '0 4px 15px rgba(0,0,0,0.05)',
+                        padding: '1rem 1.25rem', borderRadius: msg.sender === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px', maxWidth: '90%', fontSize: '0.95rem', lineHeight: 1.6, boxShadow: msg.sender === 'user' ? '0 8px 20px rgba(219, 39, 119, 0.2)' : '0 4px 15px rgba(0,0,0,0.05)',
                         border: msg.sender === 'bot' ? '1px solid #f3f4f6' : 'none'
                       }}>
-                        {msg.text}
+                        <ReactMarkdown 
+                          components={{
+                            p: ({node, ...props}) => <p style={{margin: '0 0 0.5rem 0'}} {...props} />,
+                            li: ({node, ...props}) => <li style={{margin: '0.25rem 0'}} {...props} />,
+                            h1: ({node, ...props}) => <h1 style={{fontSize: '1.2rem', fontWeight: 800, margin: '0.75rem 0'}} {...props} />,
+                            h2: ({node, ...props}) => <h2 style={{fontSize: '1.1rem', fontWeight: 800, margin: '0.5rem 0'}} {...props} />,
+                            hr: () => <hr style={{ border: 'none', borderTop: '1px solid #f3f4f6', margin: '0.75rem 0' }} />
+                          }}
+                        >
+                          {msg.text}
+                        </ReactMarkdown>
                       </div>
                     </div>
                   ))}
-                  {isLoading && <div style={{ color:'var(--text-muted)', fontSize:'0.8rem', fontStyle:'italic', ml:'40px' }}>Llama 3 is thinking...</div>}
+                  {isLoading && (
+                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                      <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', padding: '0.5rem', borderRadius: '10px', color: 'white', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Bot size={18} /></div>
+                      <TypingIndicator />
+                    </div>
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
               )}

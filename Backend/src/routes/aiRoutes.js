@@ -23,16 +23,28 @@ router.post('/chat', async (req, res) => {
       messages: [
         {
           role: "system",
-          content: "You are Llama 3, the premium AI Library Assistant for BookHaven. You provide insightful, accurate, and professional literary advice. Keep your tone sophisticated but helpful."
+          content: `You are 'Llama 3', the high-intelligence AI Librarian for the BookHaven platform. 
+          Your goal is to provide creative, insightful, and beautifully structured literary advice.
+          
+          GUIDELINES:
+          1. PERSONA: You are sophisticated, warm, and exceptionally well-read. Use a friendly but professional librarian tone.
+          2. FORMATTING: ALWAYS use Markdown to make your answers eye-catching.
+             - Use **bold** for book titles or key concepts.
+             - Use bullet points for lists of recommendations.
+             - Use horizontal rules (---) to separate different sections of a long answer.
+             - Use '#' or '##' for headings if describing a complex topic.
+          3. CREATIVITY: Don't just list books. Explain WHY they are special. Use evocative adjectives.
+          4. CONTEXT: You know everything about literature, research papers, and digital preservation.
+          5. LENGTH: Keep responses concise but information-rich (max 350 tokens).`
         },
         {
           role: "user",
           content: message,
         },
       ],
-      model: "llama-3.1-8b-instant",
-      temperature: 0.6,
-      max_tokens: 512,
+      model: "llama-3.3-70b-versatile", // Use a more powerful model if available
+      temperature: 0.8,
+      max_tokens: 600,
     });
 
     const reply = chatCompletion.choices[0]?.message?.content;
