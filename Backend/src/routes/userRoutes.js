@@ -62,13 +62,13 @@ router.post('/login', async (req, res) => {
         
         // Check if the user is the specific admin.
         if (email === 'admin@bookhaven.com' && password === 'admin123') {
-            const token = jwt.sign({ id: 1, role: 'admin', email }, JWT_SECRET, { expiresIn: '1h' });
+            const token = jwt.sign({ id: 1, role: 'admin', email }, JWT_SECRET, { expiresIn: '7d' });
             
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: 3600000 
+                secure: true, // Always true for cross-domain support
+                sameSite: 'none',
+                maxAge: 7 * 24 * 60 * 60 * 1000 
             });
             
             return res.json({ message: 'Logged in as Admin', user: { email, role: 'admin', name: 'Identity Admin' } });
@@ -88,12 +88,12 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
         
-        const token = jwt.sign({ id: user._id, role: user.role, email }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id, role: user.role, email }, JWT_SECRET, { expiresIn: '7d' });
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 3600000 
+            secure: true,
+            sameSite: 'none',
+            maxAge: 7 * 24 * 60 * 60 * 1000 
         });
         
         // Send login alert
@@ -119,20 +119,20 @@ router.post('/google-login', async (req, res) => {
         
         const payload = ticket.getPayload();
         const { email, name, picture } = payload;
-
+ 
         // DB Upsert: Save user to DB if they don't exist
         let dbUser = await User.findOne({ email });
         if (!dbUser) {
             dbUser = await User.create({ email, name, picture });
         }
-
-        const sessionToken = jwt.sign({ id: dbUser._id, role: dbUser.role, email }, JWT_SECRET, { expiresIn: '1h' });
+ 
+        const sessionToken = jwt.sign({ id: dbUser._id, role: dbUser.role, email }, JWT_SECRET, { expiresIn: '7d' });
         
         res.cookie('token', sessionToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 3600000
+            secure: true,
+            sameSite: 'none',
+            maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         // Send login alert
@@ -236,7 +236,7 @@ router.post('/support', verifyToken, async (req, res) => {
 router.delete('/delete-account', verifyToken, async (req, res) => {
     try {
         await User.findByIdAndDelete(req.user.id);
-        res.clearCookie('token');
+        res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'none' });
         res.json({ message: 'Account deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: 'Failed to delete account' });
@@ -245,7 +245,7 @@ router.delete('/delete-account', verifyToken, async (req, res) => {
 
 // @route POST /api/users/logout
 router.post('/logout', (req, res) => {
-    res.clearCookie('token');
+    res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'none' });
     res.json({ message: 'Logged out successfully' });
 });
 
