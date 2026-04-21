@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, Download, ExternalLink } from 'lucide-react';
+import { Star, Download, ExternalLink, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -85,29 +85,31 @@ const BookCard = ({ book }) => {
         <h3 className="book-title" style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem', lineHeight: 1.3 }}>{book.title}</h3>
         <p className="book-author" style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>by {book.author}</p>
         
-        <div className="book-card-footer" style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="book-card-footer" style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Price</span>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#10b981' }}>FREE</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '1px' }}>Price</span>
+            <span style={{ fontWeight: 900, fontSize: '1.25rem', color: '#10b981', letterSpacing: '-0.5px' }}>FREE</span>
           </div>
           <motion.button 
             className="book-card-button"
             onClick={handleRead}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.05, boxShadow: '0 12px 25px rgba(99, 102, 241, 0.4)' }}
+            whileTap={{ scale: 0.95 }}
             style={{
-              background: 'var(--text-main)',
-              color: 'var(--bg-card)',
-              padding: '0.6rem 1rem',
-              borderRadius: '10px',
+              background: 'linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%)',
+              color: 'white',
+              padding: '0.75rem 1.25rem',
+              borderRadius: '12px',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem',
+              gap: '0.6rem',
               fontSize: '0.9rem',
-              cursor: 'pointer'
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: '0 8px 20px rgba(99, 102, 241, 0.2)'
             }}>
-            Read PDF <ExternalLink size={16} />
+            Read Now <BookOpen size={18} />
           </motion.button>
         </div>
       </div>
