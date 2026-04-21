@@ -191,6 +191,8 @@ router.get('/me', async (req, res) => {
 // @route PUT /api/users/profile
 router.put('/profile', verifyToken, async (req, res) => {
     try {
+        if (req.user.id === 1) return res.json({ message: 'Admin profile cannot be modified', user: { name: 'Identity Admin', role: 'admin' } });
+
         const { name, bio, location, picture } = req.body;
         const user = await User.findByIdAndUpdate(
             req.user.id,
@@ -206,6 +208,8 @@ router.put('/profile', verifyToken, async (req, res) => {
 // @route POST /api/users/reading-progress
 router.post('/reading-progress', verifyToken, async (req, res) => {
     try {
+        if (req.user.id === 1) return res.json({ message: 'Progress saved (Simulation)' });
+
         const { bookId, paperId, progress, status } = req.body;
         const user = await User.findById(req.user.id);
         
@@ -233,12 +237,18 @@ router.post('/reading-progress', verifyToken, async (req, res) => {
 router.post('/support', verifyToken, async (req, res) => {
     try {
         const { subject, message } = req.body;
-        const user = await User.findById(req.user.id);
-        
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        let userData;
+
+        if (req.user.id === 1) {
+            userData = { name: 'Identity Admin', email: 'admin@bookhaven.com' };
+        } else {
+            const user = await User.findById(req.user.id);
+            if (!user) return res.status(404).json({ message: 'User not found' });
+            userData = { name: user.name, email: user.email };
+        }
 
         const { sendSupportRequest } = require('../utils/emailService');
-        await sendSupportRequest({ subject, message }, { name: user.name, email: user.email });
+        await sendSupportRequest({ subject, message }, userData);
 
         res.json({ message: 'Support request sent! We will contact you soon.' });
     } catch (err) {
