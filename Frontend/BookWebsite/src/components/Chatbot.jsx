@@ -121,6 +121,9 @@ const Chatbot = () => {
               border: '1px solid rgba(255,255,255,0.05)'
             }}
           >
+            {/* --- VIBRANT TOP ACCENT --- */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '5px', background: 'linear-gradient(90deg, #6366f1, #a855f7, #ec4899)', zIndex: 10, boxShadow: '0 2px 15px rgba(168, 85, 247, 0.4)' }} />
+
             {/* --- LUXE NEURAL MESH --- */}
             <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
               <motion.div 
