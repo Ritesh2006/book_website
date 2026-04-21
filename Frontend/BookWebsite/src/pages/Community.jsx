@@ -47,6 +47,7 @@ const Community = () => {
     
     const postData = {
       user: user?.name || "Anonymous",
+      email: user?.email,
       avatar: (user?.name || "A")[0].toUpperCase(),
       content: newPostContent,
       tags: ["NewPost"]

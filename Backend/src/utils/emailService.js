@@ -11,22 +11,79 @@ const transporter = nodemailer.createTransport({
 
 const sendWelcomeEmail = async (userEmail, userName) => {
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: `"BookHaven" <${process.env.EMAIL_USER}>`,
         to: userEmail,
         subject: 'Welcome to BookHaven!',
         html: `
-            <h1>Hello ${userName}!</h1>
-            <p>Welcome to BookHaven, your ultimate source for free books.</p>
-            <p>Enjoy reading without limits!</p>
+            <div style="font-family: sans-serif; color: #333;">
+                <h1>Hello ${userName}!</h1>
+                <p>Welcome to <strong>BookHaven</strong>, your ultimate source for books.</p>
+                <p>We are glad to have you in our community!</p>
+                <hr />
+                <p>Happy Reading!</p>
+            </div>
         `
     };
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully');
+        console.log('Welcome email sent successfully');
     } catch (err) {
         console.error('Email error:', err);
     }
 };
 
-module.exports = { sendWelcomeEmail };
+const sendLoginAlert = async (userEmail, userName) => {
+    const mailOptions = {
+        from: `"BookHaven" <${process.env.EMAIL_USER}>`,
+        to: userEmail,
+        subject: 'New Login to your BookHaven account',
+        html: `
+            <div style="font-family: sans-serif; color: #333;">
+                <h3>Hello ${userName},</h3>
+                <p>A new login was detected for your account at <strong>${new Date().toLocaleString()}</strong>.</p>
+                <p>If this was not you, please secure your account immediately.</p>
+                <br />
+                <p>Team BookHaven</p>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Login alert sent');
+    } catch (err) {
+        console.error('Email error:', err);
+    }
+};
+
+const sendCommunityPostNotification = async (userEmail, userName, postTitle) => {
+    const mailOptions = {
+        from: `"BookHaven" <${process.env.EMAIL_USER}>`,
+        to: userEmail,
+        subject: 'New Post in BookHaven Community',
+        html: `
+            <div style="font-family: sans-serif; color: #333;">
+                <h3>New Post Alert!</h3>
+                <p>Hi ${userName},</p>
+                <p>A new post was just created in the community: <strong>"${postTitle}"</strong></p>
+                <p>Check it out now and join the conversation!</p>
+                <br />
+                <p>Team BookHaven</p>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Community post notification sent');
+    } catch (err) {
+        console.error('Email error:', err);
+    }
+};
+
+module.exports = { 
+    sendWelcomeEmail, 
+    sendLoginAlert, 
+    sendCommunityPostNotification 
+};

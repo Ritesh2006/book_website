@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
-const { sendWelcomeEmail } = require('../utils/emailService');
+const { sendWelcomeEmail, sendLoginAlert } = require('../utils/emailService');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
@@ -33,6 +33,10 @@ router.post('/register', async (req, res) => {
         });
         
         console.log(`User created: ${email}`);
+        
+        // Send welcome email
+        sendWelcomeEmail(email, name || 'User').catch(err => console.error('Failed to send welcome email:', err));
+        
         return res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
         console.error("Registration error:", err);
@@ -82,6 +86,9 @@ router.post('/login', async (req, res) => {
             maxAge: 3600000 
         });
         
+        // Send login alert
+        sendLoginAlert(email, user.name || 'User').catch(err => console.error('Failed to send login alert:', err));
+        
         return res.json({ message: 'Login successful', user: { email: user.email, role: user.role, name: user.name, picture: user.picture } });
     } catch (err) {
         console.error("Login error:", err);
@@ -117,6 +124,9 @@ router.post('/google-login', async (req, res) => {
             sameSite: 'lax',
             maxAge: 3600000
         });
+
+        // Send login alert
+        sendLoginAlert(email, dbUser.name || 'User').catch(err => console.error('Failed to send login alert:', err));
 
         return res.json({ message: 'Google Verification Successful', user: dbUser });
     } catch (error) {
