@@ -220,32 +220,15 @@ router.post('/support', verifyToken, async (req, res) => {
         const { subject, message } = req.body;
         const user = await User.findById(req.user.id);
         
-        // Use nodemailer to send support request to admin
-        const nodemailer = require('nodemailer');
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER, // Send to self (admin)
-            subject: `SUPPORT REQUEST: ${subject}`,
-            html: `
-                <h3>New Support Request from ${user.name}</h3>
-                <p><strong>Email:</strong> ${user.email}</p>
-                <p><strong>Subject:</strong> ${subject}</p>
-                <p><strong>Message:</strong></p>
-                <div style="padding: 1rem; background: #f4f4f4; border-radius: 8px;">${message}</div>
-            `
-        });
+        const { sendSupportRequest } = require('../utils/emailService');
+        await sendSupportRequest({ subject, message }, { name: user.name, email: user.email });
 
         res.json({ message: 'Support request sent! We will contact you soon.' });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to send support request' });
+        console.error('Support error:', err);
+        res.status(500).json({ message: 'Failed to send support request. Mail configuration error.' });
     }
 });
 

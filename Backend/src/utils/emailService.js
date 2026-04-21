@@ -82,8 +82,33 @@ const sendCommunityPostNotification = async (userEmail, userName, postTitle) => 
     }
 };
 
+const sendSupportRequest = async (supportData, userDetails) => {
+    const mailOptions = {
+        from: `"BookHaven Support" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        subject: `SUPPORT: ${supportData.subject}`,
+        html: `
+            <div style="font-family: sans-serif; color: #333; padding: 20px; border: 1px solid #ddd; borderRadius: 10px;">
+                <h2 style="color: #6366f1;">New Support Request</h2>
+                <p><strong>From:</strong> ${userDetails.name} (${userDetails.email})</p>
+                <p><strong>Subject:</strong> ${supportData.subject}</p>
+                <hr />
+                <p><strong>Message:</strong></p>
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+                    ${supportData.message}
+                </div>
+                <br />
+                <small>Submitted at: ${new Date().toLocaleString()}</small>
+            </div>
+        `
+    };
+
+    return transporter.sendMail(mailOptions);
+};
+
 module.exports = { 
     sendWelcomeEmail, 
     sendLoginAlert, 
-    sendCommunityPostNotification 
+    sendCommunityPostNotification,
+    sendSupportRequest
 };

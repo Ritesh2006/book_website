@@ -49,12 +49,12 @@ const UserDashboard = () => {
   const handleSendSupport = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/api/users/support`, supportData);
-      alert('Support request sent! Our team will contact you soon.');
+      const res = await axios.post(`${API_URL}/api/users/support`, supportData);
+      alert(res.data.message || 'Support request sent!');
       setShowSupport(false);
       setSupportData({ subject: '', message: '' });
     } catch (err) {
-      alert('Failed to send request');
+      alert(err.response?.data?.message || 'Failed to send request. Is the backend running?');
     }
   };
 

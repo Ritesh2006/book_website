@@ -76,7 +76,7 @@ const Admin = () => {
       setEditingItem(null);
       fetchData();
     } catch (err) {
-      alert('Action failed. Check console.');
+      alert(err.response?.data?.message || 'Action failed. Is the server online?');
     }
   };
 
