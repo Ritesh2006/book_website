@@ -114,9 +114,23 @@ const Admin = () => {
         key: 'tourVideoUrl',
         value: settings.tourVideoUrl
       }, { withCredentials: true });
-      alert('Settings updated successfully!');
+      alert('Video updated successfully!');
     } catch (err) {
-      alert('Failed to update settings');
+      alert('Failed to update video');
+    }
+  };
+
+  const handleDeleteVideo = async () => {
+    if (!window.confirm('Are you sure you want to delete the tour video? This will revert it to the default video.')) return;
+    try {
+      await axios.post(`${API_URL}/api/settings`, {
+        key: 'tourVideoUrl',
+        value: ''
+      }, { withCredentials: true });
+      setSettings({ ...settings, tourVideoUrl: '' });
+      alert('Video deleted successfully!');
+    } catch (err) {
+      alert('Failed to delete video');
     }
   };
 
@@ -165,12 +179,12 @@ const Admin = () => {
 
       {/* TABS */}
       <div style={{ display: 'flex', gap: '2rem', borderBottom: '1px solid var(--border)', marginBottom: '2.5rem' }}>
-        {['inventory', 'papers', 'users', 'settings'].map(tab => (
+        {['inventory', 'papers', 'users', 'media'].map(tab => (
           <button 
             key={tab} onClick={() => setActiveTab(tab)}
             style={{ background: 'transparent', border: 'none', borderBottom: activeTab === tab ? '3px solid var(--primary)' : '3px solid transparent', padding: '1rem 0.5rem', color: activeTab === tab ? 'var(--text-main)' : 'var(--text-muted)', fontWeight: 800, cursor: 'pointer', textTransform: 'capitalize', transition: 'all 0.2s' }}
           >
-            {tab === 'inventory' ? 'Books' : tab}
+            {tab === 'inventory' ? 'Books' : tab === 'media' ? 'Media' : tab}
           </button>
         ))}
       </div>
@@ -245,28 +259,63 @@ const Admin = () => {
                 </tr>
               ))}
 
-              {activeTab === 'settings' && (
+              {activeTab === 'media' && (
                 <tr>
                   <td colSpan="4" style={{ padding: '2rem 0' }}>
                     <div style={{ maxWidth: '600px' }}>
-                      <h3 style={{ marginBottom: '1.5rem' }}>Site Configuration</h3>
+                      <h3 style={{ marginBottom: '1.5rem' }}>Media Assets</h3>
                       <form onSubmit={handleUpdateSettings}>
                         <div style={{ marginBottom: '1.5rem' }}>
                           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Tour Platform Video URL</label>
+                          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                            <input 
+                              type="text" 
+                              value={settings.tourVideoUrl} 
+                              onChange={e => setSettings({ ...settings, tourVideoUrl: e.target.value })} 
+                              placeholder="Enter video URL (mp4, YouTube, etc.)"
+                              style={{ ...inputStyle, flex: 1 }}
+                            />
+                            {settings.tourVideoUrl && (
+                              <button 
+                                type="button"
+                                onClick={handleDeleteVideo}
+                                style={{ background: '#ef444420', color: '#ef4444', border: 'none', padding: '0.85rem', borderRadius: '12px', cursor: 'pointer' }}
+                                title="Delete Video"
+                              >
+                                <Trash2 size={20} />
+                              </button>
+                            )}
+                          </div>
+                          
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem' }}>Or Upload Video File:</label>
                           <input 
-                            type="text" 
-                            value={settings.tourVideoUrl} 
-                            onChange={e => setSettings({ ...settings, tourVideoUrl: e.target.value })} 
-                            placeholder="Enter video URL (mp4, YouTube, etc.)"
-                            style={inputStyle}
+                            type="file" 
+                            accept="video/mp4,video/x-m4v,video/*" 
+                            onChange={async (e) => {
+                              const file = e.target.files[0];
+                              if (!file) return;
+                              const formData = new FormData();
+                              formData.append('video', file);
+                              try {
+                                const res = await axios.post(`${API_URL}/api/settings/upload-video`, formData, { withCredentials: true });
+                                setSettings({ ...settings, tourVideoUrl: res.data.url });
+                                alert('Video Uploaded Successfully! Don\'t forget to Save.');
+                              } catch (err) {
+                                alert('Upload failed');
+                              }
+                            }} 
+                            style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} 
                           />
+                          
                           <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
                             This video will be displayed when users click "Tour Platform" on the home page.
                           </p>
                         </div>
-                        <button type="submit" style={{ background: 'var(--primary)', color: 'white', padding: '0.8rem 2rem', borderRadius: '12px', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Save size={18} /> Save Settings
-                        </button>
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                          <button type="submit" style={{ background: 'var(--primary)', color: 'white', padding: '0.8rem 2rem', borderRadius: '12px', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Save size={18} /> {settings.tourVideoUrl ? 'Update Video' : 'Add Video'}
+                          </button>
+                        </div>
                       </form>
                     </div>
                   </td>
