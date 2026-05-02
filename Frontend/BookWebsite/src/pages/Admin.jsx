@@ -13,6 +13,7 @@ const Admin = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [settings, setSettings] = useState({ tourVideoUrl: '' });
 
   // Form States
   const [newBook, setNewBook] = useState({
@@ -33,14 +34,16 @@ const Admin = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [bRes, uRes, pRes] = await Promise.all([
+      const [bRes, uRes, pRes, sRes] = await Promise.all([
         axios.get(`${API_URL}/api/books?limit=200`),
         axios.get(`${API_URL}/api/users`),
-        axios.get(`${API_URL}/api/papers`)
+        axios.get(`${API_URL}/api/papers`),
+        axios.get(`${API_URL}/api/settings/tourVideoUrl`)
       ]);
       setBooks(bRes.data.books || []);
       setUsers(uRes.data || []);
       setPapers(pRes.data || []);
+      if (sRes.data) setSettings({ tourVideoUrl: sRes.data.value });
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -104,6 +107,19 @@ const Admin = () => {
     setShowAddModal(true);
   };
 
+  const handleUpdateSettings = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API_URL}/api/settings`, {
+        key: 'tourVideoUrl',
+        value: settings.tourVideoUrl
+      }, { withCredentials: true });
+      alert('Settings updated successfully!');
+    } catch (err) {
+      alert('Failed to update settings');
+    }
+  };
+
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
       
@@ -149,7 +165,7 @@ const Admin = () => {
 
       {/* TABS */}
       <div style={{ display: 'flex', gap: '2rem', borderBottom: '1px solid var(--border)', marginBottom: '2.5rem' }}>
-        {['inventory', 'papers', 'users'].map(tab => (
+        {['inventory', 'papers', 'users', 'settings'].map(tab => (
           <button 
             key={tab} onClick={() => setActiveTab(tab)}
             style={{ background: 'transparent', border: 'none', borderBottom: activeTab === tab ? '3px solid var(--primary)' : '3px solid transparent', padding: '1rem 0.5rem', color: activeTab === tab ? 'var(--text-main)' : 'var(--text-muted)', fontWeight: 800, cursor: 'pointer', textTransform: 'capitalize', transition: 'all 0.2s' }}
@@ -215,7 +231,7 @@ const Admin = () => {
               ))}
 
               {/* USER ROW MAP */}
-              {activeTab === 'users' && users.filter(u => u.email.toLowerCase().includes(searchTerm.toLowerCase())).map(u => (
+               {activeTab === 'users' && users.filter(u => u.email.toLowerCase().includes(searchTerm.toLowerCase())).map(u => (
                 <tr key={u._id} style={{ borderBottom: '1px solid var(--border)' }}>
                   <td style={{ padding: '1rem' }}>
                     <img src={u.picture || 'https://via.placeholder.com/30'} style={{ width: '30px', borderRadius: '50%' }} />
@@ -228,6 +244,34 @@ const Admin = () => {
                   </td>
                 </tr>
               ))}
+
+              {activeTab === 'settings' && (
+                <tr>
+                  <td colSpan="4" style={{ padding: '2rem 0' }}>
+                    <div style={{ maxWidth: '600px' }}>
+                      <h3 style={{ marginBottom: '1.5rem' }}>Site Configuration</h3>
+                      <form onSubmit={handleUpdateSettings}>
+                        <div style={{ marginBottom: '1.5rem' }}>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Tour Platform Video URL</label>
+                          <input 
+                            type="text" 
+                            value={settings.tourVideoUrl} 
+                            onChange={e => setSettings({ ...settings, tourVideoUrl: e.target.value })} 
+                            placeholder="Enter video URL (mp4, YouTube, etc.)"
+                            style={inputStyle}
+                          />
+                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                            This video will be displayed when users click "Tour Platform" on the home page.
+                          </p>
+                        </div>
+                        <button type="submit" style={{ background: 'var(--primary)', color: 'white', padding: '0.8rem 2rem', borderRadius: '12px', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <Save size={18} /> Save Settings
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

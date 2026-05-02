@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, Play, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
 
 const Hero = () => {
   const [index, setIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("https://assets.mixkit.co/videos/preview/mixkit-coffee-cup-and-a-stack-of-books-9914-large.mp4");
   
+  const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com';
   const bgImages = [
     "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=1600",
     "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=1600",
@@ -16,6 +19,19 @@ const Hero = () => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % bgImages.length);
     }, 6000);
+
+    const fetchVideoUrl = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/settings/tourVideoUrl`);
+        if (res.data && res.data.value) {
+          setVideoUrl(res.data.value);
+        }
+      } catch (err) {
+        console.error("Failed to fetch tour video:", err);
+      }
+    };
+    fetchVideoUrl();
+
     return () => clearInterval(timer);
   }, []);
 
@@ -254,7 +270,7 @@ const Hero = () => {
                 controls 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               >
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-coffee-cup-and-a-stack-of-books-9914-large.mp4" type="video/mp4" />
+                <source src={videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </motion.div>

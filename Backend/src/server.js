@@ -38,6 +38,7 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/posts', require('./routes/communityRoutes'));
 app.use('/api/papers', require('./routes/paperRoutes'));
+app.use('/api/settings', require('./routes/settingsRoutes'));
 
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
