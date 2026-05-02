@@ -21,19 +21,17 @@ exports.getSetting = async (req, res) => {
 exports.updateSetting = async (req, res) => {
     try {
         const { key, value } = req.body;
+        console.log(`Updating setting: ${key} = ${value}`);
         
-        let setting = await Settings.findOne({ key });
-        
-        if (setting) {
-            setting.value = value;
-            await setting.save();
-        } else {
-            setting = new Settings({ key, value });
-            await setting.save();
-        }
+        const setting = await Settings.findOneAndUpdate(
+            { key },
+            { value },
+            { upsert: true, new: true, runValidators: true }
+        );
         
         res.json(setting);
     } catch (err) {
+        console.error('Update setting error:', err.message);
         res.status(500).json({ message: err.message });
     }
 };

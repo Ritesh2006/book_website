@@ -25,9 +25,13 @@ const Hero = () => {
         const res = await axios.get(`${API_URL}/api/settings/tourVideoUrl`);
         if (res.data && res.data.value) {
           setVideoUrl(res.data.value);
+        } else {
+          // Fallback to demo video if no setting found
+          setVideoUrl("https://www.w3schools.com/html/mov_bbb.mp4");
         }
       } catch (err) {
         console.error("Failed to fetch tour video:", err);
+        setVideoUrl("https://www.w3schools.com/html/mov_bbb.mp4"); // Demo video
       }
     };
     fetchVideoUrl();

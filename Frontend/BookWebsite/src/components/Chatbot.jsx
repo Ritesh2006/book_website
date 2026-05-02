@@ -94,19 +94,23 @@ const Chatbot = () => {
     <>
       {/* Floating Trigger Button */}
       <motion.button
-        whileHover={{ scale: 1.1, rotate: 5 }}
+        whileHover={{ scale: 1.1, rotate: 5, boxShadow: '0 0 40px rgba(99, 102, 241, 0.8)' }}
         whileTap={{ scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
         onClick={() => setIsOpen(true)}
         style={{
-          position: 'fixed', bottom: isMobile ? '1rem' : '2rem', right: isMobile ? '1rem' : '2rem',
+          position: 'fixed', bottom: isMobile ? '1.5rem' : '2.5rem', right: isMobile ? '1.5rem' : '2.5rem',
           background: 'linear-gradient(135deg, var(--primary) 0%, #a855f7 100%)', 
           color: 'white', border: 'none',
-          borderRadius: '50%', width: isMobile ? '56px' : '70px', height: isMobile ? '56px' : '70px',
+          borderRadius: '50%', width: isMobile ? '60px' : '75px', height: isMobile ? '60px' : '75px',
           display: isOpen ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 15px 35px rgba(99, 102, 241, 0.4)', cursor: 'pointer', zIndex: 9999
+          boxShadow: '0 15px 35px rgba(99, 102, 241, 0.4)', cursor: 'pointer', zIndex: 9999,
+          border: '2px solid rgba(255,255,255,0.2)'
         }}
       >
-        <MessageSquare size={isMobile ? 26 : 34} />
+        <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: 'var(--primary)', opacity: 0.3, filter: 'blur(15px)' }} />
+        <MessageSquare size={isMobile ? 28 : 36} style={{ position: 'relative', zIndex: 1 }} />
       </motion.button>
 
       <AnimatePresence>

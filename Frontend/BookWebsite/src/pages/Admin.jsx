@@ -116,14 +116,17 @@ const Admin = () => {
 
   const handleUpdateSettings = async (e) => {
     e.preventDefault();
+    const videoToSave = settings.tourVideoUrl || "https://www.w3schools.com/html/mov_bbb.mp4";
     try {
-      await axios.post(`${API_URL}/api/settings`, {
+      const res = await axios.post(`${API_URL}/api/settings`, {
         key: 'tourVideoUrl',
-        value: settings.tourVideoUrl
+        value: videoToSave
       }, { withCredentials: true });
-      alert('Video updated successfully!');
+      alert(`Settings Updated Successfully!\nStored Key: ${res.data.key}\nValue: ${res.data.value}`);
+      fetchData();
     } catch (err) {
-      alert('Failed to update video');
+      console.error("Save error:", err);
+      alert(`Failed to update settings: ${err.response?.data?.message || err.message}\nAPI URL used: ${API_URL}`);
     }
   };
 
