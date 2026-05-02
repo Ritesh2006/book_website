@@ -34,19 +34,26 @@ const Admin = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [bRes, uRes, pRes, sRes] = await Promise.all([
+      // Use allSettled to ensure that even if one request (like settings) fails, others still load
+      const results = await Promise.allSettled([
         axios.get(`${API_URL}/api/books?limit=200`),
         axios.get(`${API_URL}/api/users`),
         axios.get(`${API_URL}/api/papers`),
         axios.get(`${API_URL}/api/settings/tourVideoUrl`)
       ]);
-      setBooks(bRes.data.books || []);
-      setUsers(uRes.data || []);
-      setPapers(pRes.data || []);
-      if (sRes.data) setSettings({ tourVideoUrl: sRes.data.value });
+
+      const [bRes, uRes, pRes, sRes] = results;
+
+      if (bRes.status === 'fulfilled') setBooks(bRes.value.data.books || []);
+      if (uRes.status === 'fulfilled') setUsers(uRes.value.data || []);
+      if (pRes.status === 'fulfilled') setPapers(pRes.value.data || []);
+      if (sRes.status === 'fulfilled' && sRes.value.data) {
+        setSettings({ tourVideoUrl: sRes.value.data.value });
+      }
+
       setLoading(false);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch Data Error:", err);
       setLoading(false);
     }
   };
