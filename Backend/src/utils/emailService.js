@@ -1,17 +1,48 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+let transporter;
+
+const getTransporter = async () => {
+    if (transporter) return transporter;
+
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+        transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+        console.log("Using Gmail transporter");
+    } else {
+        console.log("No EMAIL_USER/EMAIL_PASS provided. Creating an Ethereal test account...");
+        try {
+            const testAccount = await nodemailer.createTestAccount();
+            transporter = nodemailer.createTransport({
+                host: "smtp.ethereal.email",
+                port: 587,
+                secure: false,
+                auth: {
+                    user: testAccount.user,
+                    pass: testAccount.pass
+                }
+            });
+            console.log(`Ethereal test account created: ${testAccount.user}`);
+            console.log(`Log into https://ethereal.email/login to view emails, or check terminal for preview URLs.`);
+        } catch (err) {
+            console.error("Failed to create Ethereal account:", err);
+            // Fallback mock
+            transporter = { sendMail: async (opts) => { console.log('Mock mail sent:', opts.subject); return { messageId: 'mock' }; } };
+        }
     }
-});
+    return transporter;
+};
 
 const sendWelcomeEmail = async (userEmail, userName) => {
+    const t = await getTransporter();
     const mailOptions = {
-        from: `"BookHaven" <${process.env.EMAIL_USER}>`,
+        from: `"BookHaven" <${process.env.EMAIL_USER || 'noreply@bookhaven.com'}>`,
         to: userEmail,
         subject: 'Welcome to BookHaven!',
         html: `
@@ -26,16 +57,20 @@ const sendWelcomeEmail = async (userEmail, userName) => {
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+        const info = await t.sendMail(mailOptions);
         console.log('Welcome email sent successfully');
+        if (nodemailer.getTestMessageUrl(info)) {
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        }
     } catch (err) {
         console.error('Email error:', err);
     }
 };
 
 const sendLoginAlert = async (userEmail, userName) => {
+    const t = await getTransporter();
     const mailOptions = {
-        from: `"BookHaven" <${process.env.EMAIL_USER}>`,
+        from: `"BookHaven" <${process.env.EMAIL_USER || 'noreply@bookhaven.com'}>`,
         to: userEmail,
         subject: 'New Login to your BookHaven account',
         html: `
@@ -50,16 +85,20 @@ const sendLoginAlert = async (userEmail, userName) => {
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+        const info = await t.sendMail(mailOptions);
         console.log('Login alert sent');
+        if (nodemailer.getTestMessageUrl(info)) {
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        }
     } catch (err) {
         console.error('Email error:', err);
     }
 };
 
 const sendCommunityPostNotification = async (userEmail, userName, postTitle) => {
+    const t = await getTransporter();
     const mailOptions = {
-        from: `"BookHaven" <${process.env.EMAIL_USER}>`,
+        from: `"BookHaven" <${process.env.EMAIL_USER || 'noreply@bookhaven.com'}>`,
         to: userEmail,
         subject: 'New Post in BookHaven Community',
         html: `
@@ -75,23 +114,21 @@ const sendCommunityPostNotification = async (userEmail, userName, postTitle) => 
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+        const info = await t.sendMail(mailOptions);
         console.log('Community post notification sent');
+        if (nodemailer.getTestMessageUrl(info)) {
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        }
     } catch (err) {
         console.error('Email error:', err);
     }
 };
 
 const sendSupportRequest = async (supportData, userDetails) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.log("Email env vars missing. Simulating support request:");
-        console.log(`[Support Request] From: ${userDetails.name} (${userDetails.email}) - Subject: ${supportData.subject} - Message: ${supportData.message}`);
-        return Promise.resolve(true);
-    }
-
+    const t = await getTransporter();
     const mailOptions = {
-        from: `"BookHaven Support" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_USER,
+        from: `"BookHaven Support" <${process.env.EMAIL_USER || 'support@bookhaven.com'}>`,
+        to: process.env.EMAIL_USER || 'admin@bookhaven.com',
         subject: `SUPPORT: ${supportData.subject}`,
         html: `
             <div style="font-family: sans-serif; color: #333; padding: 20px; border: 1px solid #ddd; borderRadius: 10px;">
@@ -109,7 +146,17 @@ const sendSupportRequest = async (supportData, userDetails) => {
         `
     };
 
-    return transporter.sendMail(mailOptions);
+    try {
+        const info = await t.sendMail(mailOptions);
+        console.log('Support request sent');
+        if (nodemailer.getTestMessageUrl(info)) {
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        }
+        return info;
+    } catch (err) {
+        console.error('Email error:', err);
+        throw err;
+    }
 };
 
 module.exports = { 

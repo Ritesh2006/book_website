@@ -9,8 +9,11 @@ const BookCard = ({ book }) => {
 
   const handleRead = async () => {
     // Open PDF
-    const fallbackPdf = 'https://archive.org/download/artofwar00sunu/artofwar00sunu.pdf';
-    window.open(book.pdfUrl || fallbackPdf, '_blank');
+    if (!book.pdfUrl) {
+      alert("This book doesn't have a PDF file available yet. Please check back later.");
+      return;
+    }
+    window.open(book.pdfUrl, '_blank');
     
     // Record progress if logged in
     if (user && book._id) {

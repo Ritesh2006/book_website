@@ -14,6 +14,7 @@ import ReactMarkdown from 'react-markdown';
 const Chatbot = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('home'); // 'home', 'messages', 'help'
   const [messages, setMessages] = useState([
@@ -22,6 +23,12 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -91,34 +98,37 @@ const Chatbot = () => {
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
         style={{
-          position: 'fixed', bottom: '1rem', right: '1rem',
+          position: 'fixed', bottom: isMobile ? '1rem' : '2rem', right: isMobile ? '1rem' : '2rem',
           background: 'linear-gradient(135deg, var(--primary) 0%, #a855f7 100%)', 
           color: 'white', border: 'none',
-          borderRadius: '50%', width: '64px', height: '64px',
+          borderRadius: '50%', width: isMobile ? '56px' : '70px', height: isMobile ? '56px' : '70px',
           display: isOpen ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 12px 30px rgba(99, 102, 241, 0.5), inset 0 2px 4px rgba(255,255,255,0.3)', cursor: 'pointer', zIndex: 9999
+          boxShadow: '0 15px 35px rgba(99, 102, 241, 0.4)', cursor: 'pointer', zIndex: 9999
         }}
       >
-        <MessageSquare size={32} />
+        <MessageSquare size={isMobile ? 26 : 34} />
       </motion.button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.9 }}
+            initial={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 100, scale: 0.9 }}
+            exit={isMobile ? { opacity: 0, y: '100%' } : { opacity: 0, y: 50, scale: 0.95 }}
             style={{
-              position: 'fixed', bottom: '1rem', right: '1rem',
-              width: 'calc(100vw - 2rem)', maxWidth: '420px',
-              height: 'calc(100vh - 6rem)', maxHeight: '750px',
-              background: 'rgba(10, 15, 30, 0.95)',
-              borderRadius: '40px',
-              boxShadow: '0 50px 100px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.08)',
+              position: 'fixed', 
+              bottom: isMobile ? '0' : '2rem', 
+              right: isMobile ? '0' : '2rem',
+              width: isMobile ? '100%' : '420px',
+              height: isMobile ? '100%' : 'calc(100vh - 8rem)', 
+              maxHeight: isMobile ? '100%' : '800px',
+              background: '#0a0f1e',
+              borderRadius: isMobile ? '0' : '32px',
+              boxShadow: '0 50px 100px rgba(0, 0, 0, 0.5)',
               display: 'flex', flexDirection: 'column',
               zIndex: 10000, overflow: 'hidden',
               backdropFilter: 'blur(40px)',
-              border: '1px solid rgba(255,255,255,0.05)'
+              border: isMobile ? 'none' : '1px solid rgba(255,255,255,0.1)'
             }}
           >
             {/* --- VIBRANT TOP ACCENT --- */}

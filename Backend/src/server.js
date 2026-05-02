@@ -39,6 +39,9 @@ app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/posts', require('./routes/communityRoutes'));
 app.use('/api/papers', require('./routes/paperRoutes'));
 
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+
 // Basic route
 app.get('/', (req, res) => {
     res.send('Book Website API is running...');
