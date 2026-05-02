@@ -9,8 +9,8 @@ const BookCard = ({ book }) => {
 
   const handleRead = async () => {
     // Open PDF
-    const demoPdf = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-    window.open(book.pdfUrl || demoPdf, '_blank');
+    const fallbackPdf = 'https://archive.org/download/artofwar00sunu/artofwar00sunu.pdf';
+    window.open(book.pdfUrl || fallbackPdf, '_blank');
     
     // Record progress if logged in
     if (user && book._id) {

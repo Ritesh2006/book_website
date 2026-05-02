@@ -440,6 +440,60 @@ const mockBooks = [
     rating: 4.5, 
     coverImage: "https://covers.openlibrary.org/b/id/13101683-L.jpg",
     pdfUrl: "https://archive.org/download/metamorphosis00kafk/metamorphosis00kafk.pdf"
+  },
+  { 
+    id: 13, 
+    title: "Frankenstein", 
+    author: "Mary Shelley", 
+    category: "Horror", 
+    rating: 4.8, 
+    coverImage: "https://covers.openlibrary.org/b/id/12658141-L.jpg",
+    pdfUrl: "https://archive.org/download/frankenstein00shel/frankenstein00shel.pdf"
+  },
+  { 
+    id: 14, 
+    title: "The Time Machine", 
+    author: "H.G. Wells", 
+    category: "Sci-Fi", 
+    rating: 4.7, 
+    coverImage: "https://covers.openlibrary.org/b/id/12644267-L.jpg",
+    pdfUrl: "https://archive.org/download/timemachine00well/timemachine00well.pdf"
+  },
+  { 
+    id: 15, 
+    title: "The Odyssey", 
+    author: "Homer", 
+    category: "Adventure", 
+    rating: 4.9, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660058-L.jpg",
+    pdfUrl: "https://archive.org/download/odysseyofhomer00homeuoft/odysseyofhomer00homeuoft.pdf"
+  },
+  { 
+    id: 16, 
+    title: "Gulliver's Travels", 
+    author: "Jonathan Swift", 
+    category: "Adventure", 
+    rating: 4.6, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660059-L.jpg",
+    pdfUrl: "https://archive.org/download/gulliverstravels00swif/gulliverstravels00swif.pdf"
+  },
+  { 
+    id: 17, 
+    title: "The Jungle Book", 
+    author: "Rudyard Kipling", 
+    category: "Adventure", 
+    rating: 4.8, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660060-L.jpg",
+    pdfUrl: "https://archive.org/download/junglebook00kipl/junglebook00kipl.pdf"
+  },
+  { 
+    id: 18, 
+    title: "Treasure Island", 
+    author: "Robert Louis Stevenson", 
+    category: "Adventure", 
+    rating: 4.9, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660061-L.jpg",
+    pdfUrl: "https://archive.org/download/treasureisland00ste/treasureisland00ste.pdf"
   }
 ];
 

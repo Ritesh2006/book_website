@@ -13,7 +13,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.9, 
     coverImage: "https://covers.openlibrary.org/b/id/14312836-L.jpg",
-    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    pdfUrl: "https://archive.org/download/prideprejudice00aust/prideprejudice00aust.pdf"
   },
   { 
     title: "The Adventures of Sherlock Holmes", 
@@ -21,7 +21,7 @@ const mockBooks = [
     category: "Mystery", 
     rating: 4.8, 
     coverImage: "https://covers.openlibrary.org/b/id/12832264-L.jpg",
-    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
+    pdfUrl: "https://archive.org/download/adventuresifsher00doyluoft/adventuresifsher00doyluoft.pdf"
   },
   { 
     title: "Moby-Dick", 
@@ -29,7 +29,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.5, 
     coverImage: "https://covers.openlibrary.org/b/id/12660057-L.jpg",
-    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
+    pdfUrl: "https://archive.org/download/mobydickorwhale00melvuoft/mobydickorwhale00melvuoft.pdf"
   },
   { 
     title: "Dracula", 
@@ -37,7 +37,7 @@ const mockBooks = [
     category: "Horror", 
     rating: 4.7, 
     coverImage: "https://covers.openlibrary.org/b/id/14421115-L.jpg",
-    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    pdfUrl: "https://archive.org/download/dracula00stok/dracula00stok.pdf"
   },
   { 
     title: "Alice in Wonderland", 
@@ -45,7 +45,7 @@ const mockBooks = [
     category: "Fantasy", 
     rating: 4.9, 
     coverImage: "https://covers.openlibrary.org/b/id/14101292-L.jpg",
-    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
+    pdfUrl: "https://archive.org/download/alicesadventure00carrgoog/alicesadventure00carrgoog.pdf"
   },
   { 
     title: "The Picture of Dorian Gray", 
@@ -53,7 +53,7 @@ const mockBooks = [
     category: "Philosophy", 
     rating: 4.6, 
     coverImage: "https://covers.openlibrary.org/b/id/12668541-L.jpg",
-    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
+    pdfUrl: "https://archive.org/download/pictureofdoriang00wild_0/pictureofdoriang00wild_0.pdf"
   },
   { 
     title: "Wuthering Heights", 
@@ -61,7 +61,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.5, 
     coverImage: "https://covers.openlibrary.org/b/id/10543209-L.jpg",
-    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    pdfUrl: "https://archive.org/download/wutheringheights01bron_1/wutheringheights01bron_1.pdf"
   },
   { 
     title: "Great Expectations", 
@@ -69,7 +69,7 @@ const mockBooks = [
     category: "Classic", 
     rating: 4.8, 
     coverImage: "https://covers.openlibrary.org/b/id/12586617-L.jpg",
-    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
+    pdfUrl: "https://archive.org/download/greatexpectation00dick/greatexpectation00dick.pdf"
   },
   { 
     title: "The Adventures of Tom Sawyer", 
@@ -77,7 +77,7 @@ const mockBooks = [
     category: "Adventure", 
     rating: 4.7, 
     coverImage: "https://covers.openlibrary.org/b/id/12569438-L.jpg",
-    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
+    pdfUrl: "https://archive.org/download/74-pdf/74-pdf.pdf"
   },
   { 
     title: "Jane Eyre", 
@@ -85,7 +85,7 @@ const mockBooks = [
     category: "Romance", 
     rating: 4.9, 
     coverImage: "https://covers.openlibrary.org/b/id/12674393-L.jpg",
-    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    pdfUrl: "https://archive.org/download/janeeyre01bron/janeeyre01bron.pdf"
   },
   { 
     title: "The War of the Worlds", 
@@ -93,7 +93,7 @@ const mockBooks = [
     category: "Sci-Fi", 
     rating: 4.6, 
     coverImage: "https://covers.openlibrary.org/b/id/12644265-L.jpg",
-    pdfUrl: "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf"
+    pdfUrl: "https://archive.org/download/warofworlds00well/warofworlds00well.pdf"
   },
   { 
     title: "Metamorphosis", 
@@ -101,7 +101,55 @@ const mockBooks = [
     category: "Philosophy", 
     rating: 4.5, 
     coverImage: "https://covers.openlibrary.org/b/id/13101683-L.jpg",
-    pdfUrl: "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf"
+    pdfUrl: "https://archive.org/download/metamorphosis00kafk/metamorphosis00kafk.pdf"
+  },
+  { 
+    title: "Frankenstein", 
+    author: "Mary Shelley", 
+    category: "Horror", 
+    rating: 4.8, 
+    coverImage: "https://covers.openlibrary.org/b/id/12658141-L.jpg",
+    pdfUrl: "https://archive.org/download/frankenstein00shel/frankenstein00shel.pdf"
+  },
+  { 
+    title: "The Time Machine", 
+    author: "H.G. Wells", 
+    category: "Sci-Fi", 
+    rating: 4.7, 
+    coverImage: "https://covers.openlibrary.org/b/id/12644267-L.jpg",
+    pdfUrl: "https://archive.org/download/timemachine00well/timemachine00well.pdf"
+  },
+  { 
+    title: "The Odyssey", 
+    author: "Homer", 
+    category: "Adventure", 
+    rating: 4.9, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660058-L.jpg",
+    pdfUrl: "https://archive.org/download/odysseyofhomer00homeuoft/odysseyofhomer00homeuoft.pdf"
+  },
+  { 
+    title: "Gulliver's Travels", 
+    author: "Jonathan Swift", 
+    category: "Adventure", 
+    rating: 4.6, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660059-L.jpg",
+    pdfUrl: "https://archive.org/download/gulliverstravels00swif/gulliverstravels00swif.pdf"
+  },
+  { 
+    title: "The Jungle Book", 
+    author: "Rudyard Kipling", 
+    category: "Adventure", 
+    rating: 4.8, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660060-L.jpg",
+    pdfUrl: "https://archive.org/download/junglebook00kipl/junglebook00kipl.pdf"
+  },
+  { 
+    title: "Treasure Island", 
+    author: "Robert Louis Stevenson", 
+    category: "Adventure", 
+    rating: 4.9, 
+    coverImage: "https://covers.openlibrary.org/b/id/12660061-L.jpg",
+    pdfUrl: "https://archive.org/download/treasureisland00ste/treasureisland00ste.pdf"
   }
 ];
 
