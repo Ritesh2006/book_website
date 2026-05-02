@@ -15,13 +15,16 @@ app.set('trust proxy', 1);
 // Middleware
 const allowedOrigins = [
     'http://localhost:5173',
+    'http://localhost',
+    'capacitor://localhost',
     'https://book-website-1w7b.vercel.app',
-    'https://book-website-ritesh.vercel.app' // Optional fallback
+    'https://book-website-ritesh.vercel.app',
+    'https://bookwebsite-woad-phi.vercel.app'
 ];
 
 app.use(cors({ 
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+        if (!origin || allowedOrigins.includes(origin) || (origin && origin.endsWith('.vercel.app'))) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));

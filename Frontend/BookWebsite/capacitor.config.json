@@ -1,5 +1,9 @@
 {
   "appId": "com.bookhaven.app",
   "appName": "BookHaven",
-  "webDir": "dist"
+  "webDir": "dist",
+  "server": {
+    "url": "https://bookwebsite-woad-phi.vercel.app",
+    "cleartext": true
+  }
 }
