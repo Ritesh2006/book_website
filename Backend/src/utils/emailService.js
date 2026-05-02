@@ -83,6 +83,12 @@ const sendCommunityPostNotification = async (userEmail, userName, postTitle) => 
 };
 
 const sendSupportRequest = async (supportData, userDetails) => {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.log("Email env vars missing. Simulating support request:");
+        console.log(`[Support Request] From: ${userDetails.name} (${userDetails.email}) - Subject: ${supportData.subject} - Message: ${supportData.message}`);
+        return Promise.resolve(true);
+    }
+
     const mailOptions = {
         from: `"BookHaven Support" <${process.env.EMAIL_USER}>`,
         to: process.env.EMAIL_USER,
