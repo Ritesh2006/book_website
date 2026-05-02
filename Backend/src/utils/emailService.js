@@ -126,22 +126,34 @@ const sendCommunityPostNotification = async (userEmail, userName, postTitle) => 
 
 const sendSupportRequest = async (supportData, userDetails) => {
     const t = await getTransporter();
+    
+    // Use EMAIL_RECEIVER if set, otherwise EMAIL_USER, otherwise fallback admin email
+    const recipient = process.env.EMAIL_RECEIVER || process.env.EMAIL_USER || 'riteshrakshit2006@gmail.com';
+    
     const mailOptions = {
         from: `"BookHaven Support" <${process.env.EMAIL_USER || 'support@bookhaven.com'}>`,
-        to: process.env.EMAIL_USER || 'admin@bookhaven.com',
+        to: recipient,
         subject: `SUPPORT: ${supportData.subject}`,
         html: `
-            <div style="font-family: sans-serif; color: #333; padding: 20px; border: 1px solid #ddd; borderRadius: 10px;">
-                <h2 style="color: #6366f1;">New Support Request</h2>
-                <p><strong>From:</strong> ${userDetails.name} (${userDetails.email})</p>
-                <p><strong>Subject:</strong> ${supportData.subject}</p>
-                <hr />
-                <p><strong>Message:</strong></p>
-                <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
-                    ${supportData.message}
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1f2937; padding: 30px; background-color: #f3f4f6; border-radius: 15px;">
+                <div style="background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <h2 style="color: #4f46e5; margin-top: 0; font-size: 24px; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px;">New Support Request</h2>
+                    
+                    <div style="margin-top: 25px;">
+                        <p style="margin: 5px 0;"><strong>From:</strong> ${userDetails.name}</p>
+                        <p style="margin: 5px 0;"><strong>Email:</strong> ${userDetails.email}</p>
+                        <p style="margin: 5px 0;"><strong>Subject:</strong> ${supportData.subject}</p>
+                    </div>
+
+                    <div style="margin-top: 30px; background: #f9fafb; padding: 25px; border-left: 4px solid #4f46e5; border-radius: 4px;">
+                        <p style="margin: 0; font-weight: 600; color: #374151; margin-bottom: 10px;">Message:</p>
+                        <p style="white-space: pre-wrap; line-height: 1.6; color: #4b5563;">${supportData.message}</p>
+                    </div>
+
+                    <div style="margin-top: 30px; font-size: 12px; color: #9ca3af; text-align: center;">
+                        <p>Submitted via BookHaven Support Portal at ${new Date().toLocaleString()}</p>
+                    </div>
                 </div>
-                <br />
-                <small>Submitted at: ${new Date().toLocaleString()}</small>
             </div>
         `
     };
