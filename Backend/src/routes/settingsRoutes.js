@@ -43,17 +43,22 @@ router.post('/repopulate-books', verifyToken, adminOnly, async (req, res) => {
         
         const books = docs.map(doc => {
             const identifier = doc.identifier;
+            let description = 'Deep dive into essential knowledge.';
+            if (doc.description) {
+                description = doc.description.toString().substring(0, 500).replace(/<[^>]*>?/gm, '');
+            }
+            
             return {
                 title: doc.title || 'Untitled Knowledge',
                 author: doc.creator || 'Unknown Expert',
-                description: doc.description ? doc.description.substring(0, 500).replace(/<[^>]*>?/gm, '') : 'Deep dive into essential knowledge.',
+                description: description,
                 coverImage: `https://archive.org/services/img/${identifier}`,
                 pdfUrl: `https://archive.org/download/${identifier}/${identifier}.pdf`,
                 category: doc.subject ? (doc.subject.toString().includes('Science') ? 'Science' : 'Classic') : 'Knowledge',
                 price: 0,
                 rating: 4.8,
                 pages: 250,
-                publishedDate: doc.date ? doc.date.substring(0, 4) : 'N/A'
+                publishedDate: doc.date ? doc.date.toString().substring(0, 4) : 'N/A'
             };
         });
         
