@@ -146,8 +146,8 @@ const Admin = () => {
         key: 'tourVideoUrl',
         value: ''
       }, { withCredentials: true });
-      setSettings({ ...settings, tourVideoUrl: '' });
-      alert('Video deleted successfully!');
+      setSettings(prev => ({ ...prev, tourVideoUrl: '' }));
+      alert('Video removed from database. Home page will now show the default video.');
     } catch (err) {
       alert('Failed to delete video');
     }
@@ -286,63 +286,72 @@ const Admin = () => {
                       <form onSubmit={handleUpdateSettings}>
                         <div style={{ marginBottom: '1.5rem' }}>
                           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Tour Platform Video URL</label>
-                          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
                             <input 
-                              type="text" 
+                              style={{ ...inputStyle, flex: 1 }} 
+                              placeholder="Paste Permanent Video URL (e.g., from Drive or YouTube)" 
                               value={settings.tourVideoUrl} 
                               onChange={e => setSettings({ ...settings, tourVideoUrl: e.target.value })} 
-                              placeholder="Enter video URL (mp4, YouTube, etc.)"
-                              style={{ ...inputStyle, flex: 1 }}
                             />
                             {settings.tourVideoUrl && (
                               <button 
                                 type="button"
                                 onClick={handleDeleteVideo}
+                                disabled={uploading}
                                 style={{ background: '#ef444420', color: '#ef4444', border: 'none', padding: '0.85rem', borderRadius: '12px', cursor: 'pointer' }}
-                                title="Delete Video"
+                                title="Clear from Database"
                               >
                                 <Trash2 size={20} />
                               </button>
                             )}
                           </div>
                           
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem' }}>Or Upload Video File:</label>
-                          <input 
-                            type="file" 
-                            accept="video/mp4,video/x-m4v,video/*" 
-                            onChange={async (e) => {
-                              const file = e.target.files[0];
-                              if (!file) return;
-                              setUploading(true);
-                              const formData = new FormData();
-                              formData.append('video', file);
-                              try {
-                                const res = await axios.post(`${API_URL}/api/settings/upload-video`, formData, { withCredentials: true });
-                                const newUrl = res.data.url;
-                                
-                                // Auto-save to settings collection
-                                await axios.post(`${API_URL}/api/settings`, {
-                                  key: 'tourVideoUrl',
-                                  value: newUrl
-                                }, { withCredentials: true });
-                                
-                                setSettings(prev => ({ ...prev, tourVideoUrl: newUrl }));
-                                alert('Video Uploaded and Saved Successfully!');
-                              } catch (err) {
-                                alert('Upload or Save failed: ' + (err.response?.data?.message || err.message));
-                              }
-                            }} 
-                            style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} 
-                          />
-                          
-                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                            This video will be displayed when users click "Tour Platform" on the home page.
-                          </p>
-                        </div>
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                          <button type="submit" style={{ background: 'var(--primary)', color: 'white', padding: '0.8rem 2rem', borderRadius: '12px', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Save size={18} /> {settings.tourVideoUrl ? 'Update Video' : 'Add Video'}
-                          </button>
+                          <div style={{ padding: '1rem', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '12px', border: '1px dashed var(--primary)', marginBottom: '1rem' }}>
+                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>
+                               🚀 Recommended: Use a Permanent URL
+                             </label>
+                             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                               Direct uploads to the server are deleted every time you redeploy the site. Paste a link from Google Drive or a Video Host for permanent storage.
+                             </p>
+                             
+                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem' }}>Or Upload Temporary File:</label>
+                             <input 
+                               type="file" 
+                               accept="video/*" 
+                               onChange={async (e) => {
+                                 const file = e.target.files[0];
+                                 if (!file) return;
+                                 setUploading(true);
+                                 const formData = new FormData();
+                                 formData.append('video', file);
+                                 try {
+                                   const res = await axios.post(`${API_URL}/api/settings/upload-video`, formData, { withCredentials: true });
+                                   const newUrl = res.data.url;
+                                   
+                                   await axios.post(`${API_URL}/api/settings`, {
+                                     key: 'tourVideoUrl',
+                                     value: newUrl
+                                   }, { withCredentials: true });
+                                   
+                                   setSettings(prev => ({ ...prev, tourVideoUrl: newUrl }));
+                                   alert('Video Uploaded! NOTE: This link will expire when you redeploy. Use a URL for permanent storage.');
+                                 } catch (err) {
+                                   alert('Upload failed: ' + (err.response?.data?.message || err.message));
+                                 } finally {
+                                   setUploading(false);
+                                 }
+                               }} 
+                               style={{ background: 'white', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} 
+                             />
+                           </div>
+                           
+                           <button 
+                             type="submit"
+                             disabled={uploading}
+                             style={{ background: 'var(--primary)', color: 'white', padding: '0.8rem 2rem', borderRadius: '12px', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', justifyContent: 'center' }}
+                           >
+                             <Save size={18}/> {uploading ? 'Processing...' : (settings.tourVideoUrl ? 'Update Video' : 'Add Video')}
+                           </button>
                         </div>
                       </form>
                     </div>
