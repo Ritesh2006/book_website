@@ -429,7 +429,8 @@ const Admin = () => {
                               setNewBook(prev => ({...prev, pdfUrl: res.data.url}));
                               alert('PDF Uploaded & Linked Successfully!');
                           } catch (err) { 
-                              alert('Upload failed: ' + (err.response?.data?.message || err.message)); 
+                              const errorMsg = err.response?.data?.message || err.message;
+                              alert('UPLOAD FAILED: ' + errorMsg + '\n\nTIP: Ensure you have added Cloudinary credentials to your Render Dashboard Environment Variables.'); 
                           } finally {
                               setUploading(false);
                           }
@@ -467,7 +468,8 @@ const Admin = () => {
                               setNewPaper(prev => ({...prev, pdfUrl: res.data.url}));
                               alert('PDF Uploaded & Linked Successfully!');
                           } catch (err) { 
-                              alert('Upload failed: ' + (err.response?.data?.message || err.message)); 
+                              const errorMsg = err.response?.data?.message || err.message;
+                              alert('UPLOAD FAILED: ' + errorMsg + '\n\nTIP: Ensure you have added Cloudinary credentials to your Render Dashboard Environment Variables.'); 
                           } finally {
                               setUploading(false);
                           }
