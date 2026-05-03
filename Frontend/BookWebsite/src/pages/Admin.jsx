@@ -425,12 +425,19 @@ const Admin = () => {
                           setUploading(true);
                           const formData = new FormData(); formData.append('pdf', file);
                           try {
-                              const res = await axios.post(`${API_URL}/api/books/upload`, formData, { withCredentials: true });
-                              setNewBook(prev => ({...prev, pdfUrl: res.data.url}));
-                              alert('PDF Uploaded & Linked Successfully!');
+                              const res = await axios.post(`${API_URL}/api/books/upload`, formData, { 
+                                  withCredentials: true,
+                                  onUploadProgress: (progressEvent) => {
+                                      const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                      console.log(`Upload progress: ${percentCompleted}%`);
+                                  }
+                              });
+                              const finalUrl = res.data.url || res.data.path;
+                              setNewBook(prev => ({...prev, pdfUrl: finalUrl}));
+                              alert('✅ PDF Uploaded Successfully! You can now click Save.');
                           } catch (err) { 
                               const errorMsg = err.response?.data?.message || err.message;
-                              alert('UPLOAD FAILED: ' + errorMsg + '\n\nTIP: Ensure you have added Cloudinary credentials to your Render Dashboard Environment Variables.'); 
+                              alert('❌ UPLOAD FAILED: ' + errorMsg); 
                           } finally {
                               setUploading(false);
                           }
@@ -464,12 +471,19 @@ const Admin = () => {
                           setUploading(true);
                           const formData = new FormData(); formData.append('pdf', file);
                           try {
-                              const res = await axios.post(`${API_URL}/api/books/upload`, formData, { withCredentials: true });
-                              setNewPaper(prev => ({...prev, pdfUrl: res.data.url}));
-                              alert('PDF Uploaded & Linked Successfully!');
+                              const res = await axios.post(`${API_URL}/api/books/upload`, formData, { 
+                                  withCredentials: true,
+                                  onUploadProgress: (progressEvent) => {
+                                      const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                      console.log(`Upload progress: ${percentCompleted}%`);
+                                  }
+                              });
+                              const finalUrl = res.data.url || res.data.path;
+                              setNewPaper(prev => ({...prev, pdfUrl: finalUrl}));
+                              alert('✅ PDF Uploaded Successfully! You can now click Save.');
                           } catch (err) { 
                               const errorMsg = err.response?.data?.message || err.message;
-                              alert('UPLOAD FAILED: ' + errorMsg + '\n\nTIP: Ensure you have added Cloudinary credentials to your Render Dashboard Environment Variables.'); 
+                              alert('❌ UPLOAD FAILED: ' + errorMsg); 
                           } finally {
                               setUploading(false);
                           }
