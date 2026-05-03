@@ -13,18 +13,36 @@ const getTransporter = async () => {
     if (isConfigured) {
         try {
             transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true, // Use SSL
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
                 }
             });
             await transporter.verify();
-            console.log("Using Gmail transporter (Verified)");
+            console.log("Using Gmail transporter (Verified on port 465)");
             return transporter;
         } catch (err) {
-            console.error("Gmail verification failed, falling back to Ethereal:", err.message);
-            transporter = null; // Clear it so we don't return a broken one
+            console.error("Gmail port 465 failed, trying port 587:", err.message);
+            try {
+                transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false, // Use TLS
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS
+                    }
+                });
+                await transporter.verify();
+                console.log("Using Gmail transporter (Verified on port 587)");
+                return transporter;
+            } catch (err2) {
+                console.error("Gmail verification failed on all ports. falling back to Ethereal.", err2);
+                transporter = null;
+            }
         }
     }
     
