@@ -319,7 +319,6 @@ const Admin = () => {
                               try {
                                 const res = await axios.post(`${API_URL}/api/settings/upload-video`, formData, { withCredentials: true });
                                 const newUrl = res.data.url;
-                                setSettings({ ...settings, tourVideoUrl: newUrl });
                                 
                                 // Auto-save to settings collection
                                 await axios.post(`${API_URL}/api/settings`, {
@@ -327,6 +326,7 @@ const Admin = () => {
                                   value: newUrl
                                 }, { withCredentials: true });
                                 
+                                setSettings(prev => ({ ...prev, tourVideoUrl: newUrl }));
                                 alert('Video Uploaded and Saved Successfully!');
                               } catch (err) {
                                 alert('Upload or Save failed: ' + (err.response?.data?.message || err.message));

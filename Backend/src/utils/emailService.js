@@ -1,73 +1,62 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-let transporter;
+let transporter = null;
+let etherealTransporter = null;
 
 const getTransporter = async () => {
+    // 1. Return cached Gmail transporter if available
     if (transporter) return transporter;
 
     const isConfigured = process.env.EMAIL_USER && 
-                       process.env.EMAIL_PASS && 
-                       process.env.EMAIL_PASS !== 'your_app_password_here';
+                        process.env.EMAIL_PASS && 
+                        process.env.EMAIL_PASS !== 'your_app_password_here';
 
     if (isConfigured) {
         try {
-            transporter = nodemailer.createTransport({
+            const t = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
-                name: 'bookhaven.com', // Fix 501 HELO error
+                name: 'bookhaven.com',
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
-                }
+                },
+                pool: true, // Use connection pooling
+                maxConnections: 5,
+                maxMessages: 100
             });
-            await transporter.verify();
-            console.log("Using Gmail transporter (Verified on port 465)");
+            await t.verify();
+            transporter = t;
+            console.log("✅ Gmail transporter verified.");
             return transporter;
         } catch (err) {
-            console.error("Gmail port 465 failed, trying port 587:", err.message);
-            try {
-                transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false,
-                    name: 'bookhaven.com', // Fix 501 HELO error
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS
-                    }
-                });
-                await transporter.verify();
-                console.log("Using Gmail transporter (Verified on port 587)");
-                return transporter;
-            } catch (err2) {
-                console.error("Gmail verification failed on all ports. falling back to Ethereal.", err2);
-                transporter = null;
-            }
+            console.error("❌ Gmail verification failed:", err.message);
         }
     }
     
-    console.log("No valid EMAIL_USER/EMAIL_PASS provided. Creating an Ethereal test account...");
-        try {
-            const testAccount = await nodemailer.createTestAccount();
-            transporter = nodemailer.createTransport({
-                host: "smtp.ethereal.email",
-                port: 587,
-                secure: false,
-                auth: {
-                    user: testAccount.user,
-                    pass: testAccount.pass
-                }
-            });
-            console.log(`Ethereal test account created: ${testAccount.user}`);
-            console.log(`Log into https://ethereal.email/login to view emails, or check terminal for preview URLs.`);
-        } catch (err) {
-            console.error("Failed to create Ethereal account:", err);
-            // Fallback mock
-            transporter = { sendMail: async (opts) => { console.log('Mock mail sent:', opts.subject); return { messageId: 'mock' }; } };
-        }
-    return transporter;
+    // 2. Return cached Ethereal if Gmail failed
+    if (etherealTransporter) return etherealTransporter;
+
+    console.log("Creating Ethereal fallback...");
+    try {
+        const testAccount = await nodemailer.createTestAccount();
+        etherealTransporter = nodemailer.createTransport({
+            host: "smtp.ethereal.email",
+            port: 587,
+            secure: false,
+            auth: {
+                user: testAccount.user,
+                pass: testAccount.pass
+            }
+        });
+        console.log(`✅ Ethereal fallback ready: ${testAccount.user}`);
+        return etherealTransporter;
+    } catch (err) {
+        console.error("❌ Ethereal fallback failed:", err);
+        return { sendMail: async (opts) => { console.log('Mock mail:', opts.subject); return { messageId: 'mock' }; } };
+    }
 };
 
 const sendWelcomeEmail = async (userEmail, userName) => {
@@ -88,11 +77,8 @@ const sendWelcomeEmail = async (userEmail, userName) => {
     };
 
     try {
-        const info = await t.sendMail(mailOptions);
-        console.log('Welcome email sent successfully');
-        if (nodemailer.getTestMessageUrl(info)) {
-            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-        }
+        await t.sendMail(mailOptions);
+        console.log('Welcome email sent');
     } catch (err) {
         console.error('Email error:', err);
     }
@@ -116,11 +102,8 @@ const sendLoginAlert = async (userEmail, userName) => {
     };
 
     try {
-        const info = await t.sendMail(mailOptions);
+        await t.sendMail(mailOptions);
         console.log('Login alert sent');
-        if (nodemailer.getTestMessageUrl(info)) {
-            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-        }
     } catch (err) {
         console.error('Email error:', err);
     }
@@ -145,11 +128,8 @@ const sendCommunityPostNotification = async (userEmail, userName, postTitle) => 
     };
 
     try {
-        const info = await t.sendMail(mailOptions);
+        await t.sendMail(mailOptions);
         console.log('Community post notification sent');
-        if (nodemailer.getTestMessageUrl(info)) {
-            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-        }
     } catch (err) {
         console.error('Email error:', err);
     }
@@ -157,32 +137,20 @@ const sendCommunityPostNotification = async (userEmail, userName, postTitle) => 
 
 const sendSupportRequest = async (supportData, userDetails) => {
     const t = await getTransporter();
-    
-    // Use EMAIL_RECEIVER if set, otherwise EMAIL_USER, otherwise fallback admin email
-    const recipient = process.env.EMAIL_RECEIVER || process.env.EMAIL_USER || 'riteshrakshit2006@gmail.com';
+    const recipient = process.env.EMAIL_RECEIVER || process.env.EMAIL_USER || 'riteshrakhit2006@gmail.com';
     
     const mailOptions = {
         from: `"BookHaven Support" <${process.env.EMAIL_USER || 'support@bookhaven.com'}>`,
         to: recipient,
         subject: `SUPPORT: ${supportData.subject}`,
         html: `
-            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1f2937; padding: 30px; background-color: #f3f4f6; border-radius: 15px;">
-                <div style="background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <h2 style="color: #4f46e5; margin-top: 0; font-size: 24px; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px;">New Support Request</h2>
-                    
-                    <div style="margin-top: 25px;">
-                        <p style="margin: 5px 0;"><strong>From:</strong> ${userDetails.name}</p>
-                        <p style="margin: 5px 0;"><strong>Email:</strong> ${userDetails.email}</p>
-                        <p style="margin: 5px 0;"><strong>Subject:</strong> ${supportData.subject}</p>
-                    </div>
-
-                    <div style="margin-top: 30px; background: #f9fafb; padding: 25px; border-left: 4px solid #4f46e5; border-radius: 4px;">
-                        <p style="margin: 0; font-weight: 600; color: #374151; margin-bottom: 10px;">Message:</p>
-                        <p style="white-space: pre-wrap; line-height: 1.6; color: #4b5563;">${supportData.message}</p>
-                    </div>
-
-                    <div style="margin-top: 30px; font-size: 12px; color: #9ca3af; text-align: center;">
-                        <p>Submitted via BookHaven Support Portal at ${new Date().toLocaleString()}</p>
+            <div style="font-family: sans-serif; color: #1f2937; padding: 20px; background: #f3f4f6;">
+                <div style="background: white; padding: 30px; border-radius: 12px;">
+                    <h2 style="color: #4f46e5;">New Support Request</h2>
+                    <p><strong>From:</strong> ${userDetails.name} (${userDetails.email})</p>
+                    <p><strong>Subject:</strong> ${supportData.subject}</p>
+                    <div style="background: #f9fafb; padding: 20px; border-left: 4px solid #4f46e5; margin-top: 20px;">
+                        ${supportData.message}
                     </div>
                 </div>
             </div>
@@ -192,9 +160,6 @@ const sendSupportRequest = async (supportData, userDetails) => {
     try {
         const info = await t.sendMail(mailOptions);
         console.log('Support request sent');
-        if (nodemailer.getTestMessageUrl(info)) {
-            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-        }
         return info;
     } catch (err) {
         console.error('Email error:', err);
