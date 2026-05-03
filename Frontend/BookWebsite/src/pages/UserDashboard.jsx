@@ -8,6 +8,7 @@ const UserDashboard = () => {
   const { user, checkUser, logout } = useAuth();
   const [showSettings, setShowSettings] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
+  const [sending, setSending] = useState(false);
   
   // Settings Form State
   const [profileData, setProfileData] = useState({
@@ -42,7 +43,7 @@ const UserDashboard = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${API_URL}/api/users/profile`, profileData);
+      await axios.put(`${API_URL}/api/users/profile`, profileData, { withCredentials: true });
       alert('Profile updated successfully!');
       checkUser();
       setShowSettings(false);
@@ -53,20 +54,24 @@ const UserDashboard = () => {
 
   const handleSendSupport = async (e) => {
     e.preventDefault();
+    if (!supportData.subject || !supportData.message) return;
+    setSending(true);
     try {
-      const res = await axios.post(`${API_URL}/api/users/support`, supportData);
+      const res = await axios.post(`${API_URL}/api/users/support`, supportData, { withCredentials: true });
       alert(res.data.message || 'Support request sent!');
       setShowSupport(false);
       setSupportData({ subject: '', message: '' });
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to send request. Is the backend running?');
+      alert(err.response?.data?.message || 'Failed to send request. Is the email service configured?');
+    } finally {
+      setSending(false);
     }
   };
 
   const handleDeleteAccount = async () => {
     if (!window.confirm('WARNING: This will permanently delete your account and all reading progress. Proceed?')) return;
     try {
-      await axios.delete(`${API_URL}/api/users/delete-account`);
+      await axios.delete(`${API_URL}/api/users/delete-account`, { withCredentials: true });
       alert('Account deleted.');
       logout();
     } catch (err) {
@@ -201,7 +206,18 @@ const UserDashboard = () => {
                <form onSubmit={handleSendSupport} style={{ display: 'grid', gap: '1.5rem' }}>
                   <div><label style={labelStyle}>Issue Subject</label><input required style={inputStyle} value={supportData.subject} onChange={e=>setSupportData({...supportData, subject:e.target.value})} /></div>
                   <div><label style={labelStyle}>Describe your issue</label><textarea required style={{...inputStyle, height: '150px'}} value={supportData.message} onChange={e=>setSupportData({...supportData, message:e.target.value})} /></div>
-                  <button type="submit" style={saveBtnStyle}><MessageCircle size={18}/> Submit Request</button>
+                  <button 
+                    type="submit" 
+                    disabled={sending}
+                    style={{ 
+                      ...saveBtnStyle, 
+                      opacity: sending ? 0.7 : 1,
+                      cursor: sending ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    <MessageCircle size={18} style={{ pointerEvents: 'none' }}/> 
+                    {sending ? 'Sending...' : 'Submit Request'}
+                  </button>
                </form>
              </motion.div>
           </motion.div>

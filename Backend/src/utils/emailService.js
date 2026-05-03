@@ -15,7 +15,8 @@ const getTransporter = async () => {
             transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
-                secure: true, // Use SSL
+                secure: true,
+                name: 'bookhaven.com', // Fix 501 HELO error
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
@@ -30,7 +31,8 @@ const getTransporter = async () => {
                 transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 587,
-                    secure: false, // Use TLS
+                    secure: false,
+                    name: 'bookhaven.com', // Fix 501 HELO error
                     auth: {
                         user: process.env.EMAIL_USER,
                         pass: process.env.EMAIL_PASS
