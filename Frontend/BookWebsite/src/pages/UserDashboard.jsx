@@ -57,12 +57,19 @@ const UserDashboard = () => {
     if (!supportData.subject || !supportData.message) return;
     setSending(true);
     try {
-      const res = await axios.post(`${API_URL}/api/users/support`, supportData, { withCredentials: true });
+      const res = await axios.post(`${API_URL}/api/users/support`, supportData, { 
+        withCredentials: true,
+        timeout: 15000 // 15 second timeout
+      });
       alert(res.data.message || 'Support request sent!');
       setShowSupport(false);
       setSupportData({ subject: '', message: '' });
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to send request. Is the email service configured?');
+      if (err.code === 'ECONNABORTED') {
+        alert('Request timed out. The server is taking too long to send the email, but it might still go through.');
+      } else {
+        alert(err.response?.data?.message || 'Failed to send request. Is the email service configured?');
+      }
     } finally {
       setSending(false);
     }
