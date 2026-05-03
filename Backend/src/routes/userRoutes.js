@@ -255,6 +255,38 @@ router.post('/reading-progress', verifyToken, async (req, res) => {
 });
 
 // @route POST /api/users/support
+router.get('/debug-cloudinary', async (req, res) => {
+    try {
+        const cloudinary = require('cloudinary').v2;
+        cloudinary.config({
+            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        });
+        
+        const result = await cloudinary.api.ping();
+        res.json({ 
+            status: 'SUCCESS', 
+            ping: result,
+            config: {
+                cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'MISSING',
+                api_key: process.env.CLOUDINARY_API_KEY ? 'Configured' : 'MISSING',
+                api_secret: process.env.CLOUDINARY_API_SECRET ? 'Configured' : 'MISSING'
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            status: 'FAILED',
+            error: err.message,
+            env: {
+                cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+                api_key_set: !!process.env.CLOUDINARY_API_KEY,
+                api_secret_set: !!process.env.CLOUDINARY_API_SECRET
+            }
+        });
+    }
+});
+
 router.get('/debug-mail', async (req, res) => {
     try {
         const { sendSupportRequest } = require('../utils/emailService');
