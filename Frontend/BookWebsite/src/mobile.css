@@ -416,11 +416,9 @@ input, textarea {
 /* ---- Chatbot Mobile Fixes ---- */
 @media (max-width: 768px) {
   /* Position chatbot toggle above the bottom nav */
-  button[style*="bottom: 1rem"][style*="64px"] {
-    bottom: 85px !important;
-    right: 15px !important;
-    width: 56px !important;
-    height: 56px !important;
+  .chatbot-trigger-btn {
+    bottom: calc(75px + 1rem) !important;
+    right: 1.25rem !important;
   }
 
   /* Chat window adjustments for mobile */

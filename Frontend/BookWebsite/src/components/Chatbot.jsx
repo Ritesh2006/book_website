@@ -99,8 +99,9 @@ const Chatbot = () => {
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         onClick={() => setIsOpen(true)}
+        className="chatbot-trigger-btn"
         style={{
-          position: 'fixed', bottom: isMobile ? '1.5rem' : '2.5rem', right: isMobile ? '1.5rem' : '2.5rem',
+          position: 'fixed', bottom: isMobile ? '5.5rem' : '2.5rem', right: isMobile ? '1.25rem' : '2.5rem',
           background: 'linear-gradient(135deg, var(--primary) 0%, #a855f7 100%)', 
           color: 'white', border: 'none',
           borderRadius: '50%', width: isMobile ? '60px' : '75px', height: isMobile ? '60px' : '75px',
