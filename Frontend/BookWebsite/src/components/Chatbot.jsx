@@ -295,10 +295,34 @@ const Chatbot = () => {
 
             {/* --- LUXE BOTTOM INPUT --- */}
             {activeTab === 'messages' && (
-              <form onSubmit={handleSend} style={{ padding: '1.25rem 1.75rem', background: 'rgba(10, 15, 30, 0.8)', backdropFilter: 'blur(30px)', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '1rem' }}>
-                <input value={input} onChange={e => setInput(e.target.value)} placeholder="Type a message..." style={{ flex: 1, padding: '1.1rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.03)', color: 'white', outline: 'none', fontSize: '1rem', transition: 'all 0.3s' }} onFocus={(e)=>{e.target.style.borderColor='#818cf8'; e.target.style.background='rgba(255,255,255,0.05)'}} onBlur={(e)=>{e.target.style.borderColor='rgba(255,255,255,0.08)'; e.target.style.background='rgba(255,255,255,0.03)'}} />
-                <button type="submit" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: '50%', width: '58px', height: '58px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 10px 30px rgba(79, 70, 229, 0.4)', transition: 'all 0.3s' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.1) rotate(5deg)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1) rotate(0)'}>
-                  <Send size={26} style={{ marginLeft: '4px' }} />
+              <form onSubmit={handleSend} style={{ 
+                padding: isMobile ? '1rem' : '1.25rem 1.75rem', 
+                background: 'rgba(10, 15, 30, 0.8)', 
+                backdropFilter: 'blur(30px)', 
+                borderTop: '1px solid rgba(255,255,255,0.05)', 
+                display: 'flex', 
+                alignItems: 'center',
+                gap: '0.75rem' 
+              }}>
+                <input 
+                  value={input} 
+                  onChange={e => setInput(e.target.value)} 
+                  placeholder="Type a message..." 
+                  style={{ flex: 1, padding: '0.9rem 1.25rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.03)', color: 'white', outline: 'none', fontSize: '1rem' }} 
+                />
+                <button 
+                  type="submit" 
+                  style={{ 
+                    background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', 
+                    color: 'white', border: 'none', borderRadius: '50%', 
+                    width: isMobile ? '48px' : '58px', 
+                    height: isMobile ? '48px' : '58px', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                    cursor: 'pointer', flexShrink: 0,
+                    boxShadow: '0 10px 30px rgba(79, 70, 229, 0.4)' 
+                  }}
+                >
+                  <Send size={isMobile ? 20 : 26} style={{ marginLeft: '4px' }} />
                 </button>
               </form>
             )}
