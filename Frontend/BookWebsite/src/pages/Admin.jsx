@@ -306,15 +306,15 @@ const Admin = () => {
                             )}
                           </div>
                           
-                          <div style={{ padding: '1rem', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '12px', border: '1px dashed var(--primary)', marginBottom: '1rem' }}>
-                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)' }}>
-                               🚀 Recommended: Use a Permanent URL
+                           <div style={{ padding: '1rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', border: '1px dashed #10b981', marginBottom: '1rem' }}>
+                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 800, fontSize: '0.85rem', color: '#10b981' }}>
+                               ✅ Cloudinary Persistent Storage Active
                              </label>
                              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                               Direct uploads to the server are deleted every time you redeploy the site. Paste a link from Google Drive or a Video Host for permanent storage.
+                               Your videos are now stored on Cloudinary. They will <strong>NEVER</strong> be deleted during redeployment and will stay online for a lifetime.
                              </p>
                              
-                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem' }}>Or Upload Temporary File:</label>
+                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem' }}>Upload Video File:</label>
                              <input 
                                type="file" 
                                accept="video/*" 
@@ -334,7 +334,7 @@ const Admin = () => {
                                    }, { withCredentials: true });
                                    
                                    setSettings(prev => ({ ...prev, tourVideoUrl: newUrl }));
-                                   alert('Video Uploaded! NOTE: This link will expire when you redeploy. Use a URL for permanent storage.');
+                                   alert('Video Uploaded to Cloudinary! It is now permanent and will stay through every redeploy.');
                                  } catch (err) {
                                    alert('Upload failed: ' + (err.response?.data?.message || err.message));
                                  } finally {
@@ -343,7 +343,7 @@ const Admin = () => {
                                }} 
                                style={{ background: 'white', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} 
                              />
-                           </div>
+                           </div>iv>
                            
                            <button 
                              type="submit"
