@@ -274,7 +274,10 @@ router.post('/support', verifyToken, async (req, res) => {
         res.json({ message: 'Support request sent! We will contact you soon.' });
     } catch (err) {
         console.error('Support error:', err);
-        res.status(500).json({ message: 'Failed to send support request. Mail configuration error.' });
+        res.status(500).json({ 
+            message: `Failed to send support request. ${err.message}`,
+            error: err.code || err.responseCode
+        });
     }
 });
 
