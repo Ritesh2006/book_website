@@ -379,7 +379,30 @@ const Admin = () => {
                     <div style={{ gridColumn: 'span 2' }}><input required value={newBook.title} onChange={e=>setNewBook({...newBook, title:e.target.value})} placeholder="Title" style={inputStyle} /></div>
                     <div><input required value={newBook.author} onChange={e=>setNewBook({...newBook, author:e.target.value})} placeholder="Author" style={inputStyle} /></div>
                     <div><select value={newBook.category} onChange={e=>setNewBook({...newBook, category:e.target.value})} style={inputStyle}>{categories.map(c=><option key={c}>{c}</option>)}</select></div>
-                    <div style={{ gridColumn: 'span 2' }}><input required value={newBook.coverImage} onChange={e=>setNewBook({...newBook, coverImage:e.target.value})} placeholder="Image URL" style={inputStyle} /></div>
+                    <div style={{ gridColumn: 'span 2' }}>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', display: 'block' }}>Book Cover Image</label>
+                      <input 
+                        value={newBook.coverImage} 
+                        onChange={e=>setNewBook({...newBook, coverImage:e.target.value})} 
+                        placeholder="Image URL" 
+                        style={{ ...inputStyle, marginBottom: '0.5rem' }} 
+                      />
+                      <input type="file" accept="image/*" onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (!file) return;
+                          setUploading(true);
+                          const formData = new FormData(); formData.append('image', file);
+                          try {
+                              const res = await axios.post(`${API_URL}/api/books/upload-cover`, formData, { withCredentials: true });
+                              setNewBook(prev => ({...prev, coverImage: res.data.url}));
+                              alert('Cover Image Uploaded!');
+                          } catch (err) { 
+                              alert('Cover upload failed: ' + (err.response?.data?.message || err.message)); 
+                          } finally {
+                              setUploading(false);
+                          }
+                      }} style={{ fontSize: '0.75rem' }} />
+                    </div>
                     
                     <div style={{ gridColumn: 'span 2', marginTop: '0.5rem' }}>
                       <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', display: 'block' }}>PDF Source (URL or Device Upload) <span style={{ color: '#ef4444' }}>*</span></label>

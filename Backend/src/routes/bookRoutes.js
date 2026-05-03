@@ -59,35 +59,30 @@ router.put('/:id', bookController.updateBook);
 // @route DELETE /api/books/:id
 router.delete('/:id', bookController.deleteBook);
 
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-
-const uploadDir = path.join(__dirname, '../../../uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, uploadDir);
-    },
-    filename: function(req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'));
-    }
-});
-const upload = multer({ storage: storage });
+const { bookUpload, imageUpload } = require('../utils/cloudinaryConfig');
 
 // @route POST /api/books/upload
-router.post('/upload', upload.single('pdf'), (req, res) => {
+router.post('/upload', bookUpload.single('pdf'), (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
-        const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-        res.json({ url: fileUrl });
+        // Cloudinary returns the URL in req.file.path
+        res.json({ url: req.file.path });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to upload file' });
+        res.status(500).json({ message: 'Failed to upload to Cloudinary' });
+    }
+});
+
+// @route POST /api/books/upload-cover
+router.post('/upload-cover', imageUpload.single('image'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No image uploaded' });
+        }
+        res.json({ url: req.file.path });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to upload image' });
     }
 });
 
