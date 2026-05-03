@@ -9,4 +9,4 @@ const paperSchema = new mongoose.Schema({
   description: { type: String, required: true }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Paper', paperSchema);
+module.exports = mongoose.model('Paper', paperSchema, 'paper');
