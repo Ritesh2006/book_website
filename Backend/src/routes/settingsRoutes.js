@@ -45,7 +45,8 @@ router.post('/repopulate-books', verifyToken, adminOnly, async (req, res) => {
             const identifier = doc.identifier;
             let description = 'Deep dive into essential knowledge.';
             if (doc.description) {
-                description = doc.description.toString().substring(0, 500).replace(/<[^>]*>?/gm, '');
+                const rawDesc = Array.isArray(doc.description) ? doc.description.join(' ') : doc.description;
+                description = rawDesc.toString().substring(0, 500).replace(/<[^>]*>?/gm, '');
             }
             
             return {
