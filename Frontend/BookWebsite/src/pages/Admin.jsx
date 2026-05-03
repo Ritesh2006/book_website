@@ -36,10 +36,10 @@ const Admin = () => {
     try {
       // Use allSettled to ensure that even if one request (like settings) fails, others still load
       const results = await Promise.allSettled([
-        axios.get(`${API_URL}/api/books?limit=200`),
-        axios.get(`${API_URL}/api/users`),
-        axios.get(`${API_URL}/api/papers`),
-        axios.get(`${API_URL}/api/settings/tourVideoUrl`)
+        axios.get(`${API_URL}/api/books?limit=200`, { withCredentials: true }),
+        axios.get(`${API_URL}/api/users`, { withCredentials: true }),
+        axios.get(`${API_URL}/api/papers`, { withCredentials: true }),
+        axios.get(`${API_URL}/api/settings/tourVideoUrl`, { withCredentials: true })
       ]);
 
       const [bRes, uRes, pRes, sRes] = results;
@@ -71,10 +71,10 @@ const Admin = () => {
           return;
         }
         if (editingItem) {
-          await axios.put(`${API_URL}/api/books/${editingItem._id}`, newBook);
+          await axios.put(`${API_URL}/api/books/${editingItem._id}`, newBook, { withCredentials: true });
           alert('Book updated!');
         } else {
-          await axios.post(`${API_URL}/api/books`, newBook);
+          await axios.post(`${API_URL}/api/books`, newBook, { withCredentials: true });
           alert('Book added to DB!');
         }
       } else if (activeTab === 'papers') {
@@ -83,10 +83,10 @@ const Admin = () => {
           return;
         }
         if (editingItem) {
-          await axios.put(`${API_URL}/api/papers/${editingItem._id}`, newPaper);
+          await axios.put(`${API_URL}/api/papers/${editingItem._id}`, newPaper, { withCredentials: true });
           alert('Paper updated!');
         } else {
-          await axios.post(`${API_URL}/api/papers`, newPaper);
+          await axios.post(`${API_URL}/api/papers`, newPaper, { withCredentials: true });
           alert('Paper added to DB!');
         }
       }
@@ -99,14 +99,14 @@ const Admin = () => {
   };
 
   const handleDelete = async (type, id) => {
-    if (!window.confirm(`Delete this ${type} from the database permanently?`)) return;
+    if (!window.confirm('Are you sure?')) return;
     try {
-      const endpoint = type === 'book' ? 'books' : 'papers';
-      await axios.delete(`${API_URL}/api/${endpoint}/${id}`);
-      alert(`${type} removed from database.`);
+      if (type === 'book') await axios.delete(`${API_URL}/api/books/${id}`, { withCredentials: true });
+      else await axios.delete(`${API_URL}/api/papers/${id}`, { withCredentials: true });
+      alert('Deleted successfully');
       fetchData();
     } catch (err) {
-      alert('Delete failed.');
+      alert('Delete failed');
     }
   };
 
@@ -389,7 +389,7 @@ const Admin = () => {
                           if (!file) return;
                           const formData = new FormData(); formData.append('pdf', file);
                           try {
-                              const res = await axios.post(`${API_URL}/api/books/upload`, formData);
+                              const res = await axios.post(`${API_URL}/api/books/upload`, formData, { withCredentials: true });
                               setNewBook({...newBook, pdfUrl: res.data.url});
                               alert('PDF Uploaded & Linked Successfully!');
                           } catch (err) { alert('Upload failed'); }
@@ -421,7 +421,7 @@ const Admin = () => {
                           if (!file) return;
                           const formData = new FormData(); formData.append('pdf', file);
                           try {
-                              const res = await axios.post(`${API_URL}/api/books/upload`, formData);
+                              const res = await axios.post(`${API_URL}/api/books/upload`, formData, { withCredentials: true });
                               setNewPaper({...newPaper, pdfUrl: res.data.url});
                               alert('PDF Uploaded & Linked Successfully!');
                           } catch (err) { alert('Upload failed'); }
