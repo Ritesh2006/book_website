@@ -62,15 +62,31 @@ router.delete('/:id', bookController.deleteBook);
 const { bookUpload, imageUpload } = require('../utils/cloudinaryConfig');
 
 // @route POST /api/books/upload
-router.post('/upload', bookUpload.single('pdf'), (req, res) => {
+router.post('/upload', (req, res, next) => {
+    console.log("--- UPLOAD REQUEST RECEIVED ---");
+    console.log("Headers:", req.headers['content-type']);
+    next();
+}, bookUpload.single('pdf'), (req, res) => {
     try {
+        console.log("Multer processing finished.");
         if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded or file too large' });
+            console.error("❌ No file object found in request!");
+            return res.status(400).json({ message: 'No file received by the server. Check if your file is under 50MB.' });
         }
-        res.json({ url: req.file.path });
+        
+        console.log("✅ File uploaded to Cloudinary:", req.file.path);
+        res.json({ 
+            url: req.file.path,
+            secure_url: req.file.secure_url,
+            original_name: req.file.originalname
+        });
     } catch (err) {
-        console.error('Cloudinary Upload Error:', err);
-        res.status(500).json({ message: 'Cloudinary Upload Failed: ' + err.message });
+        console.error('🔥 CRITICAL CLOUDINARY ERROR:', err);
+        res.status(500).json({ 
+            message: 'Server Error during upload', 
+            details: err.message,
+            stack: err.stack 
+        });
     }
 });
 
