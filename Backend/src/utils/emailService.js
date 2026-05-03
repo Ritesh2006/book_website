@@ -12,36 +12,49 @@ const getTransporter = async () => {
                         process.env.EMAIL_PASS !== 'your_app_password_here';
 
     if (isConfigured) {
+        // Switch to Port 587 as primary because Port 465 is often blocked by cloud providers like Render
         try {
+            console.log("Trying Gmail Port 587 (TLS)...");
             const t = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
+                port: 587,
+                secure: false, // TLS
                 name: 'bookhaven.com',
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS
                 },
                 pool: true,
-                maxConnections: 5,
-                maxMessages: 100,
-                connectionTimeout: 5000, // 5 seconds to connect
-                greetingTimeout: 5000,   // 5 seconds to greet
-                socketTimeout: 10000     // 10 seconds total socket time
+                connectionTimeout: 5000,
+                greetingTimeout: 5000,
+                socketTimeout: 8000
             });
-            
-            // Non-blocking verification (don't await it if we already have a transporter)
-            // But for the first time, we verify to ensure it works
-            await Promise.race([
-                t.verify(),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('Gmail connection timeout')), 8000))
-            ]);
-            
+            await t.verify();
             transporter = t;
-            console.log("✅ Gmail transporter ready.");
+            console.log("✅ Gmail Port 587 ready.");
             return transporter;
         } catch (err) {
-            console.error("❌ Gmail connection failed:", err.message);
+            console.error("❌ Gmail Port 587 failed, trying 465:", err.message);
+            try {
+                const t465 = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true, // SSL
+                    name: 'bookhaven.com',
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS
+                    },
+                    pool: true,
+                    connectionTimeout: 5000
+                });
+                await t465.verify();
+                transporter = t465;
+                console.log("✅ Gmail Port 465 ready.");
+                return transporter;
+            } catch (err2) {
+                console.error("❌ Both Gmail ports failed.");
+            }
         }
     }
     
