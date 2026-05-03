@@ -352,6 +352,34 @@ const Admin = () => {
                            >
                              <Save size={18}/> {uploading ? 'Processing...' : (settings.tourVideoUrl ? 'Update Video' : 'Add Video')}
                            </button>
+                           <div style={{ padding: '1rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '12px', border: '1px dashed #3b82f6', marginBottom: '1rem' }}>
+                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 800, fontSize: '0.85rem', color: '#3b82f6' }}>
+                               📚 Bulk Library Sync (Internet Archive)
+                             </label>
+                             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                               This will remove all current books and add 100 high-knowledge titles (Philosophy, Science, Classics) with working PDF links.
+                             </p>
+                             
+                             <button 
+                               type="button"
+                               onClick={async () => {
+                                 if (!window.confirm('WARNING: This will delete ALL current books and replace them with 100 new titles. Continue?')) return;
+                                 setLoading(true);
+                                 try {
+                                   await axios.post(`${API_URL}/api/settings/repopulate-books`, {}, { withCredentials: true });
+                                   alert('✅ Library Successfully Repopulated with 100 Knowledge Books!');
+                                   fetchData();
+                                 } catch (err) {
+                                   alert('Sync failed: ' + (err.response?.data?.message || err.message));
+                                 } finally {
+                                   setLoading(false);
+                                 }
+                               }} 
+                               style={{ background: '#3b82f6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '12px', border: 'none', fontWeight: 700, cursor: 'pointer', width: '100%' }}
+                             >
+                               Sync 100 Knowledge Books
+                             </button>
+                           </div>
                         </div>
                       </form>
                     </div>
