@@ -6,17 +6,27 @@ let transporter;
 const getTransporter = async () => {
     if (transporter) return transporter;
 
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-        console.log("Using Gmail transporter");
-    } else {
-        console.log("No EMAIL_USER/EMAIL_PASS provided. Creating an Ethereal test account...");
+    const isConfigured = process.env.EMAIL_USER && 
+                       process.env.EMAIL_PASS && 
+                       process.env.EMAIL_PASS !== 'your_app_password_here';
+
+    if (isConfigured) {
+        try {
+            transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS
+                }
+            });
+            console.log("Using Gmail transporter");
+            return transporter;
+        } catch (err) {
+            console.error("Gmail transporter failed, falling back to Ethereal:", err.message);
+        }
+    }
+    
+    console.log("No valid EMAIL_USER/EMAIL_PASS provided. Creating an Ethereal test account...");
         try {
             const testAccount = await nodemailer.createTestAccount();
             transporter = nodemailer.createTransport({
@@ -35,7 +45,6 @@ const getTransporter = async () => {
             // Fallback mock
             transporter = { sendMail: async (opts) => { console.log('Mock mail sent:', opts.subject); return { messageId: 'mock' }; } };
         }
-    }
     return transporter;
 };
 

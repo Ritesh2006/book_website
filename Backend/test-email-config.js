@@ -1,12 +1,15 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config({ path: './Backend/.env' });
+require('dotenv').config({ path: '.env' });
 
 async function testEmail() {
     console.log("Testing email configuration...");
     console.log("EMAIL_USER:", process.env.EMAIL_USER ? "Set" : "Not Set");
     console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Set" : "Not Set");
 
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    const isPlaceholder = process.env.EMAIL_PASS === 'your_app_password_here';
+    
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || isPlaceholder) {
+        if (isPlaceholder) console.log("Detected placeholder password ('your_app_password_here').");
         console.log("Using Ethereal (Test Account)...");
         try {
             const testAccount = await nodemailer.createTestAccount();
