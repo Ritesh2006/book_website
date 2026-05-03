@@ -255,6 +255,41 @@ router.post('/reading-progress', verifyToken, async (req, res) => {
 });
 
 // @route POST /api/users/support
+router.get('/debug-mail', async (req, res) => {
+    try {
+        const { sendSupportRequest } = require('../utils/emailService');
+        const testData = { subject: 'DEBUG TEST', message: 'If you see this, email is working.' };
+        const testUser = { name: 'Debugger', email: process.env.EMAIL_USER };
+        
+        console.log("Starting production mail debug...");
+        await sendSupportRequest(testData, testUser);
+        
+        res.json({ 
+            status: 'SUCCESS', 
+            message: 'Email sent successfully from the server!',
+            config: {
+                user: process.env.EMAIL_USER ? 'Configured' : 'MISSING',
+                pass: process.env.EMAIL_PASS ? 'Configured (len: ' + process.env.EMAIL_PASS.length + ')' : 'MISSING',
+                receiver: process.env.EMAIL_RECEIVER || 'Default'
+            }
+        });
+    } catch (err) {
+        console.error('Debug Mail Error:', err);
+        res.status(500).json({ 
+            status: 'FAILED',
+            error: err.message,
+            code: err.code,
+            command: err.command,
+            response: err.response,
+            stack: err.stack,
+            env_check: {
+                user: process.env.EMAIL_USER,
+                pass_length: process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 0
+            }
+        });
+    }
+});
+
 router.post('/support', verifyToken, async (req, res) => {
     try {
         const { subject, message } = req.body;
