@@ -2,139 +2,94 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 let transporter = null;
-let etherealTransporter = null;
 
 const getTransporter = async () => {
     if (transporter) return transporter;
 
-    const isConfigured = process.env.EMAIL_USER && 
-                        process.env.EMAIL_PASS && 
-                        process.env.EMAIL_PASS !== 'your_app_password_here';
+    const user = process.env.EMAIL_USER;
+    const pass = process.env.EMAIL_PASS;
 
-    if (isConfigured) {
-        // Switch to Port 587 as primary because Port 465 is often blocked by cloud providers like Render
+    console.log(`[EmailService] Initializing for user: ${user}`);
+
+    if (user && pass && pass !== 'your_app_password_here') {
         try {
-            console.log("Trying Gmail Port 587 (TLS)...");
+            // Use Port 587 (TLS) - industry standard for cloud environments
             const t = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 587,
                 secure: false, // TLS
+                auth: { user, pass },
                 name: 'bookhaven.com',
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS
-                },
                 pool: true,
-                connectionTimeout: 5000,
-                greetingTimeout: 5000,
-                socketTimeout: 8000
+                connectionTimeout: 10000,
+                greetingTimeout: 10000,
+                socketTimeout: 15000,
+                debug: true,
+                logger: true // This will print full SMTP logs to Render console
             });
+
             await t.verify();
             transporter = t;
-            console.log("✅ Gmail Port 587 ready.");
+            console.log("✅ [EmailService] Gmail Port 587 connected and verified.");
             return transporter;
         } catch (err) {
-            console.error("❌ Gmail Port 587 failed, trying 465:", err.message);
+            console.error("❌ [EmailService] Gmail Port 587 failed:", err.message);
+            
             try {
+                console.log("Trying Port 465 (SSL) as backup...");
                 const t465 = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 465,
                     secure: true, // SSL
+                    auth: { user, pass },
                     name: 'bookhaven.com',
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS
-                    },
-                    pool: true,
-                    connectionTimeout: 5000
+                    connectionTimeout: 10000
                 });
                 await t465.verify();
                 transporter = t465;
-                console.log("✅ Gmail Port 465 ready.");
+                console.log("✅ [EmailService] Gmail Port 465 connected and verified.");
                 return transporter;
             } catch (err2) {
-                console.error("❌ Both Gmail ports failed.");
+                console.error("❌ [EmailService] All Gmail ports failed. Error:", err2.message);
             }
         }
     }
     
-    if (etherealTransporter) return etherealTransporter;
-
-    console.log("Creating Ethereal fallback...");
+    console.log("⚠️ [EmailService] Falling back to Ethereal. Check your Render Environment Variables!");
     try {
         const testAccount = await nodemailer.createTestAccount();
-        etherealTransporter = nodemailer.createTransport({
+        return nodemailer.createTransport({
             host: "smtp.ethereal.email",
             port: 587,
             secure: false,
-            auth: {
-                user: testAccount.user,
-                pass: testAccount.pass
-            }
+            auth: { user: testAccount.user, pass: testAccount.pass }
         });
-        return etherealTransporter;
     } catch (err) {
         return { sendMail: async (opts) => { console.log('Mock mail:', opts.subject); return { messageId: 'mock' }; } };
     }
 };
 
-const sendWelcomeEmail = async (userEmail, userName) => {
-    try {
-        const t = await getTransporter();
-        await t.sendMail({
-            from: `"BookHaven" <${process.env.EMAIL_USER || 'noreply@bookhaven.com'}>`,
-            to: userEmail,
-            subject: 'Welcome to BookHaven!',
-            html: `<h1>Hello ${userName}!</h1><p>Welcome to BookHaven!</p>`
-        });
-    } catch (err) { console.error('Email error:', err); }
-};
-
-const sendLoginAlert = async (userEmail, userName) => {
-    try {
-        const t = await getTransporter();
-        await t.sendMail({
-            from: `"BookHaven" <${process.env.EMAIL_USER || 'noreply@bookhaven.com'}>`,
-            to: userEmail,
-            subject: 'New Login Alert',
-            html: `<p>New login detected for ${userName}</p>`
-        });
-    } catch (err) { console.error('Email error:', err); }
-};
-
-const sendCommunityPostNotification = async (userEmail, userName, postTitle) => {
-    try {
-        const t = await getTransporter();
-        await t.sendMail({
-            from: `"BookHaven" <${process.env.EMAIL_USER || 'noreply@bookhaven.com'}>`,
-            to: userEmail,
-            subject: 'New Community Post',
-            html: `<p>New post: ${postTitle}</p>`
-        });
-    } catch (err) { console.error('Email error:', err); }
-};
-
 const sendSupportRequest = async (supportData, userDetails) => {
     const t = await getTransporter();
-    const recipient = process.env.EMAIL_RECEIVER || process.env.EMAIL_USER || 'riteshrakhit2006@gmail.com';
+    const sender = process.env.EMAIL_USER;
+    const recipient = process.env.EMAIL_RECEIVER || sender || 'riteshrakhit2006@gmail.com';
     
+    console.log(`[EmailService] Sending support mail from ${sender} to ${recipient}`);
+
     return await t.sendMail({
-        from: `"BookHaven Support" <${process.env.EMAIL_USER || 'support@bookhaven.com'}>`,
+        from: `"BookHaven Support" <${sender}>`, // Must match EMAIL_USER for Gmail
         to: recipient,
         subject: `SUPPORT: ${supportData.subject}`,
         html: `
-            <div style="font-family: sans-serif; padding: 20px;">
-                <h2>New Support Request</h2>
-                <p><strong>From:</strong> ${userDetails.name} (${userDetails.email})</p>
-                <p><strong>Message:</strong> ${supportData.message}</p>
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #4f46e5;">New Support Request</h2>
+                <p><strong>Name:</strong> ${userDetails.name}</p>
+                <p><strong>Email:</strong> ${userDetails.email}</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="white-space: pre-wrap;">${supportData.message}</p>
             </div>
         `
     });
 };
 
-module.exports = { 
-    sendWelcomeEmail, 
-    sendLoginAlert, 
-    sendCommunityPostNotification,
-    sendSupportRequest
-};
+module.exports = { sendSupportRequest };
