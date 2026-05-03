@@ -7,6 +7,7 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState('inventory');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [uploading, setUploading] = useState(false);
   
   const [books, setBooks] = useState([]);
   const [papers, setPapers] = useState([]);
@@ -64,6 +65,7 @@ const Admin = () => {
 
   const handleAddOrUpdate = async (e) => {
     e.preventDefault();
+    if (uploading) return;
     try {
       if (activeTab === 'inventory') {
         if (!newBook.pdfUrl) {
@@ -311,6 +313,7 @@ const Admin = () => {
                             onChange={async (e) => {
                               const file = e.target.files[0];
                               if (!file) return;
+                              setUploading(true);
                               const formData = new FormData();
                               formData.append('video', file);
                               try {
@@ -387,13 +390,19 @@ const Admin = () => {
                       <input type="file" accept="application/pdf" onChange={async (e) => {
                           const file = e.target.files[0];
                           if (!file) return;
+                          setUploading(true);
                           const formData = new FormData(); formData.append('pdf', file);
                           try {
                               const res = await axios.post(`${API_URL}/api/books/upload`, formData, { withCredentials: true });
-                              setNewBook({...newBook, pdfUrl: res.data.url});
+                              setNewBook(prev => ({...prev, pdfUrl: res.data.url}));
                               alert('PDF Uploaded & Linked Successfully!');
-                          } catch (err) { alert('Upload failed'); }
+                          } catch (err) { 
+                              alert('Upload failed: ' + (err.response?.data?.message || err.message)); 
+                          } finally {
+                              setUploading(false);
+                          }
                       }} style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.75rem', borderRadius: '12px', border: '1px solid var(--border)', width: '100%', fontSize: '0.85rem' }} />
+                      {uploading && <small style={{ color: 'var(--primary)', fontWeight: 600 }}>Uploading file, please wait...</small>}
                     </div>
                   </>
                 ) : (
@@ -419,17 +428,37 @@ const Admin = () => {
                       <input type="file" accept="application/pdf" onChange={async (e) => {
                           const file = e.target.files[0];
                           if (!file) return;
+                          setUploading(true);
                           const formData = new FormData(); formData.append('pdf', file);
                           try {
                               const res = await axios.post(`${API_URL}/api/books/upload`, formData, { withCredentials: true });
-                              setNewPaper({...newPaper, pdfUrl: res.data.url});
+                              setNewPaper(prev => ({...prev, pdfUrl: res.data.url}));
                               alert('PDF Uploaded & Linked Successfully!');
-                          } catch (err) { alert('Upload failed'); }
+                          } catch (err) { 
+                              alert('Upload failed: ' + (err.response?.data?.message || err.message)); 
+                          } finally {
+                              setUploading(false);
+                          }
                       }} style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.75rem', borderRadius: '12px', border: '1px solid var(--border)', width: '100%', fontSize: '0.85rem' }} />
+                      {uploading && <small style={{ color: 'var(--primary)', fontWeight: 600 }}>Uploading file, please wait...</small>}
                     </div>
                   </>
                 )}
-                <div style={{ gridColumn: 'span 2' }}><button type="submit" style={{ width: '100%', background: 'var(--primary)', color: 'white', padding: '1rem', borderRadius: '12px', border: 'none', fontWeight: 800 }}>Save to Database</button></div>
+                <div style={{ gridColumn: 'span 2' }}>
+                  <button type="submit" disabled={uploading} style={{ 
+                    width: '100%', 
+                    background: uploading ? 'gray' : 'var(--primary)', 
+                    color: 'white', 
+                    padding: '1rem', 
+                    borderRadius: '12px', 
+                    border: 'none', 
+                    fontWeight: 800,
+                    cursor: uploading ? 'not-allowed' : 'pointer',
+                    opacity: uploading ? 0.7 : 1
+                  }}>
+                    {uploading ? 'Processing File...' : 'Save to Database'}
+                  </button>
+                </div>
               </form>
             </motion.div>
           </motion.div>
