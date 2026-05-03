@@ -66,6 +66,10 @@ const Admin = () => {
     e.preventDefault();
     try {
       if (activeTab === 'inventory') {
+        if (!newBook.pdfUrl) {
+          alert('Please provide a PDF URL or upload a file from your device.');
+          return;
+        }
         if (editingItem) {
           await axios.put(`${API_URL}/api/books/${editingItem._id}`, newBook);
           alert('Book updated!');
@@ -74,6 +78,10 @@ const Admin = () => {
           alert('Book added to DB!');
         }
       } else if (activeTab === 'papers') {
+        if (!newPaper.pdfUrl) {
+          alert('Please provide a PDF URL or upload a file from your device.');
+          return;
+        }
         if (editingItem) {
           await axios.put(`${API_URL}/api/papers/${editingItem._id}`, newPaper);
           alert('Paper updated!');
@@ -231,7 +239,7 @@ const Admin = () => {
                   <td style={{ padding: '1rem' }}><img src={book.coverImage} style={{ width: '40px', borderRadius: '6px' }} /></td>
                   <td style={{ padding: '1rem' }}><strong>{book.title}</strong><br/><small>{book.author}</small></td>
                   <td>{book.category}</td>
-                  <td>{book.downloadUrl?.substring(0, 15)}...</td>
+                  <td>{book.pdfUrl?.substring(0, 15)}...</td>
                   <td style={{ textAlign: 'right' }}>
                     <button onClick={() => openEdit('book', book)} style={{ background: 'transparent', border: 'none', color: 'gray', padding: '0.5rem', cursor: 'pointer' }}><Edit2 size={16}/></button>
                     <button onClick={() => handleDelete('book', book._id)} style={{ background: 'transparent', border: 'none', color: '#ef4444', padding: '0.5rem', cursor: 'pointer' }}><Trash2 size={16}/></button>
@@ -307,10 +315,18 @@ const Admin = () => {
                               formData.append('video', file);
                               try {
                                 const res = await axios.post(`${API_URL}/api/settings/upload-video`, formData, { withCredentials: true });
-                                setSettings({ ...settings, tourVideoUrl: res.data.url });
-                                alert('Video Uploaded Successfully! Don\'t forget to Save.');
+                                const newUrl = res.data.url;
+                                setSettings({ ...settings, tourVideoUrl: newUrl });
+                                
+                                // Auto-save to settings collection
+                                await axios.post(`${API_URL}/api/settings`, {
+                                  key: 'tourVideoUrl',
+                                  value: newUrl
+                                }, { withCredentials: true });
+                                
+                                alert('Video Uploaded and Saved Successfully!');
                               } catch (err) {
-                                alert('Upload failed');
+                                alert('Upload or Save failed: ' + (err.response?.data?.message || err.message));
                               }
                             }} 
                             style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} 
@@ -353,11 +369,21 @@ const Admin = () => {
                     <div><select value={newBook.category} onChange={e=>setNewBook({...newBook, category:e.target.value})} style={inputStyle}>{categories.map(c=><option key={c}>{c}</option>)}</select></div>
                     <div style={{ gridColumn: 'span 2' }}><input required value={newBook.coverImage} onChange={e=>setNewBook({...newBook, coverImage:e.target.value})} placeholder="Image URL" style={inputStyle} /></div>
                     
-                    <div style={{ gridColumn: 'span 2', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                      <input required value={newBook.pdfUrl} onChange={e=>setNewBook({...newBook, pdfUrl:e.target.value})} placeholder="PDF Link (Or upload a file below)" style={{...inputStyle, flex: 1}} />
-                    </div>
-                    <div style={{ gridColumn: 'span 2' }}>
-                      <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', display: 'block' }}>Upload Book PDF (Optional - overrides link):</label>
+                    <div style={{ gridColumn: 'span 2', marginTop: '0.5rem' }}>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', display: 'block' }}>PDF Source (URL or Device Upload) <span style={{ color: '#ef4444' }}>*</span></label>
+                      
+                      <input 
+                        value={newBook.pdfUrl} 
+                        onChange={e=>setNewBook({...newBook, pdfUrl:e.target.value})} 
+                        placeholder="Paste PDF Link here..." 
+                        style={{ ...inputStyle, marginBottom: '1rem' }} 
+                      />
+
+                      <div style={{ position: 'relative', textAlign: 'center', margin: '0.5rem 0 1.5rem' }}>
+                        <hr style={{ border: 'none', borderTop: '1px solid var(--border)' }} />
+                        <span style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'var(--bg-card)', padding: '0 1rem', fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800 }}>OR UPLOAD FILE</span>
+                      </div>
+
                       <input type="file" accept="application/pdf" onChange={async (e) => {
                           const file = e.target.files[0];
                           if (!file) return;
@@ -365,9 +391,9 @@ const Admin = () => {
                           try {
                               const res = await axios.post(`${API_URL}/api/books/upload`, formData);
                               setNewBook({...newBook, pdfUrl: res.data.url});
-                              alert('PDF Uploaded Successfully!');
+                              alert('PDF Uploaded & Linked Successfully!');
                           } catch (err) { alert('Upload failed'); }
-                      }} style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} />
+                      }} style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.75rem', borderRadius: '12px', border: '1px solid var(--border)', width: '100%', fontSize: '0.85rem' }} />
                     </div>
                   </>
                 ) : (
@@ -375,9 +401,21 @@ const Admin = () => {
                     <div style={{ gridColumn: 'span 2' }}><input required value={newPaper.title} onChange={e=>setNewPaper({...newPaper, title:e.target.value})} placeholder="Paper Title" style={inputStyle} /></div>
                     <div><input required value={newPaper.author} onChange={e=>setNewPaper({...newPaper, author:e.target.value})} placeholder="Author" style={inputStyle} /></div>
                     <div><select value={newPaper.field} onChange={e=>setNewPaper({...newPaper, field:e.target.value})} style={inputStyle}>{fields.map(f=><option key={f}>{f}</option>)}</select></div>
-                    <div style={{ gridColumn: 'span 2' }}><input required value={newPaper.pdfUrl} onChange={e=>setNewPaper({...newPaper, pdfUrl:e.target.value})} placeholder="PDF Link (Or upload a file below)" style={inputStyle} /></div>
-                    <div style={{ gridColumn: 'span 2' }}>
-                      <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', display: 'block' }}>Upload Paper PDF (Optional - overrides link):</label>
+                    <div style={{ gridColumn: 'span 2', marginTop: '0.5rem' }}>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.75rem', display: 'block' }}>PDF Source (URL or Device Upload) <span style={{ color: '#ef4444' }}>*</span></label>
+                      
+                      <input 
+                        value={newPaper.pdfUrl} 
+                        onChange={e=>setNewPaper({...newPaper, pdfUrl:e.target.value})} 
+                        placeholder="Paste PDF Link here..." 
+                        style={{ ...inputStyle, marginBottom: '1rem' }} 
+                      />
+
+                      <div style={{ position: 'relative', textAlign: 'center', margin: '0.5rem 0 1.5rem' }}>
+                        <hr style={{ border: 'none', borderTop: '1px solid var(--border)' }} />
+                        <span style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'var(--bg-card)', padding: '0 1rem', fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800 }}>OR UPLOAD FILE</span>
+                      </div>
+
                       <input type="file" accept="application/pdf" onChange={async (e) => {
                           const file = e.target.files[0];
                           if (!file) return;
@@ -385,9 +423,9 @@ const Admin = () => {
                           try {
                               const res = await axios.post(`${API_URL}/api/books/upload`, formData);
                               setNewPaper({...newPaper, pdfUrl: res.data.url});
-                              alert('PDF Uploaded Successfully!');
+                              alert('PDF Uploaded & Linked Successfully!');
                           } catch (err) { alert('Upload failed'); }
-                      }} style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} />
+                      }} style={{ background: 'var(--bg-main)', color: 'var(--text-main)', padding: '0.75rem', borderRadius: '12px', border: '1px solid var(--border)', width: '100%', fontSize: '0.85rem' }} />
                     </div>
                   </>
                 )}

@@ -19,10 +19,12 @@ const getTransporter = async () => {
                     pass: process.env.EMAIL_PASS
                 }
             });
-            console.log("Using Gmail transporter");
+            await transporter.verify();
+            console.log("Using Gmail transporter (Verified)");
             return transporter;
         } catch (err) {
-            console.error("Gmail transporter failed, falling back to Ethereal:", err.message);
+            console.error("Gmail verification failed, falling back to Ethereal:", err.message);
+            transporter = null; // Clear it so we don't return a broken one
         }
     }
     
