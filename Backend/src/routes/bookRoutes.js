@@ -65,12 +65,12 @@ const { bookUpload, imageUpload } = require('../utils/cloudinaryConfig');
 router.post('/upload', bookUpload.single('pdf'), (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
+            return res.status(400).json({ message: 'No file uploaded or file too large' });
         }
-        // Cloudinary returns the URL in req.file.path
         res.json({ url: req.file.path });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to upload to Cloudinary' });
+        console.error('Cloudinary Upload Error:', err);
+        res.status(500).json({ message: 'Cloudinary Upload Failed: ' + err.message });
     }
 });
 

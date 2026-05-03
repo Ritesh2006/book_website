@@ -9,26 +9,54 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Generic storage for different resource types
-const createStorage = (folder, allowedFormats, resourceType = 'auto') => {
-  return new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: `bookhaven/${folder}`,
-      allowed_formats: allowedFormats,
-      resource_type: resourceType,
-      public_id: (req, file) => {
-        const name = file.originalname.split('.')[0].replace(/\s+/g, '_');
-        return `${Date.now()}-${name}`;
-      }
-    },
-  });
-};
+// Improved Storage for Documents (PDFs)
+const bookStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'bookhaven/books',
+    resource_type: 'raw', // Use 'raw' for PDFs to avoid conversion issues
+    public_id: (req, file) => {
+      const name = file.originalname.split('.')[0].replace(/\s+/g, '_');
+      return `${Date.now()}-${name}`;
+    }
+  },
+});
 
-// Specialized Uploaders
-const bookUpload = multer({ storage: createStorage('books', ['pdf', 'epub']) });
-const imageUpload = multer({ storage: createStorage('covers', ['jpg', 'png', 'jpeg', 'webp']) });
-const videoUpload = multer({ storage: createStorage('videos', ['mp4', 'mov', 'avi', 'mkv'], 'video') });
+// Improved Storage for Images
+const imageStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'bookhaven/covers',
+    resource_type: 'image',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+    transformation: [{ width: 800, crop: 'limit' }] // Optimize images on upload
+  },
+});
+
+// Improved Storage for Videos
+const videoStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'bookhaven/videos',
+    resource_type: 'video',
+    chunk_size: 6000000, // Handle larger videos
+  },
+});
+
+const bookUpload = multer({ 
+  storage: bookStorage,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
+});
+
+const imageUpload = multer({ 
+  storage: imageStorage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
+
+const videoUpload = multer({ 
+  storage: videoStorage,
+  limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit
+});
 
 module.exports = {
   cloudinary,
