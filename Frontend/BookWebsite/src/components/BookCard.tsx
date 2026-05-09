@@ -3,6 +3,7 @@ import { Star, Download, ExternalLink, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 const BookCard = ({ book }) => {
   const { user } = useAuth();
@@ -18,7 +19,7 @@ const BookCard = ({ book }) => {
     // Record progress if logged in
     if (user && book._id) {
       try {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/reading-progress`, {
+        await axios.post(`${API_BASE_URL}/api/users/reading-progress`, {
           bookId: book._id,
           progress: 50, // Default to 50% when opened
           status: 'Reading'

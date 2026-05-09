@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, Play, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const Hero = () => {
   const [index, setIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
   const [videoUrl, setVideoUrl] = useState("https://assets.mixkit.co/videos/preview/mixkit-coffee-cup-and-a-stack-of-books-9914-large.mp4");
   
-  const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com';
+  const API_URL = API_BASE_URL;
   const bgImages = [
     "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=1600",
     "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=1600",

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 
 import ReactMarkdown from 'react-markdown';
@@ -44,7 +45,7 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/ai/chat`, { 
+      const res = await axios.post(`${API_BASE_URL}/api/ai/chat`, { 
         message: text 
       });
       setMessages(prev => [...prev, { text: res.data.reply, sender: 'bot' }]);

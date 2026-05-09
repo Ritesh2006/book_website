@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const Navbar = ({ onSearch }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +49,7 @@ const Navbar = ({ onSearch }) => {
 
     if (val.length > 1) {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/books/search?q=${val}&limit=5`);
+        const res = await axios.get(`${API_BASE_URL}/api/books/search?q=${val}&limit=5`);
         setRecommendations(res.data.books || []);
         setShowRecs(true);
       } catch (err) {

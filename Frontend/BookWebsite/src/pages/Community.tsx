@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Users, Heart, Share2, Plus, Hash, X, Image, Globe, Settings, Bell, Shield, UserCheck, ChevronRight, BookOpen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const Community = () => {
   const { user } = useAuth();
@@ -21,7 +22,7 @@ const Community = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/posts`);
+      const res = await axios.get(`${API_BASE_URL}/api/posts`);
       setPosts(res.data || []);
       setLoading(false);
     } catch (err) {
@@ -34,11 +35,28 @@ const Community = () => {
     fetchPosts();
   }, []);
 
-  const handleLike = (id) => {
-    setPosts(posts.map(post => post._id === id
-      ? { ...post, likes: post.isLiked ? post.likes - 1 : post.likes + 1, isLiked: !post.isLiked }
-      : post
+  const handleLike = async (id) => {
+    const post = posts.find(p => p._id === id);
+    if (!post) return;
+    
+    const newIsLiked = !post.isLiked;
+    
+    // Optimistic Update
+    setPosts(posts.map(p => p._id === id
+      ? { ...p, likes: newIsLiked ? p.likes + 1 : Math.max(0, p.likes - 1), isLiked: newIsLiked }
+      : p
     ));
+
+    try {
+      await axios.patch(`${API_BASE_URL}/api/posts/${id}/like`, { isLiked: newIsLiked });
+    } catch (err) {
+      console.error("Like failed:", err);
+      // Rollback on error
+      setPosts(posts.map(p => p._id === id
+        ? { ...p, likes: post.likes, isLiked: post.isLiked }
+        : p
+      ));
+    }
   };
 
   const handleCreatePost = async (e) => {
@@ -54,7 +72,7 @@ const Community = () => {
     };
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/posts`, postData);
+      await axios.post(`${API_BASE_URL}/api/posts`, postData);
       setNewPostContent('');
       setShowCreateModal(false);
       fetchPosts();

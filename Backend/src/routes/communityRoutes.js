@@ -31,4 +31,21 @@ router.post('/', async (req, res) => {
     }
 });
 
+// @route PATCH /api/posts/:id/like
+router.patch('/:id/like', async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) return res.status(404).json({ message: 'Post not found' });
+        
+        // Toggle like (simplified logic: just increment/decrement)
+        const isLiked = req.body.isLiked; // We expect frontend to tell us if it's currently liked
+        post.likes = isLiked ? post.likes + 1 : Math.max(0, post.likes - 1);
+        
+        await post.save();
+        res.json(post);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 module.exports = router;
