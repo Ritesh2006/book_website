@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, BookOpen, Settings, BarChart, Plus, Trash2, Edit2, X, Check, Search, Save, Package, ShieldCheck, Database, FileText, ChevronRight } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('inventory');
@@ -30,7 +31,7 @@ const Admin = () => {
   const categories = ['Classic', 'Mystery', 'Horror', 'Fantasy', 'Philosophy', 'Adventure', 'Sci-Fi', 'Romance'];
   const fields = ['Computer Science', 'Machine Learning', 'AI', 'NLP', 'Computer Vision', 'Physics', 'Biology', 'Medicine', 'Cryptography', 'Genetics'];
 
-  const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com';
+  const API_URL = API_BASE_URL;
 
   const fetchData = async () => {
     setLoading(true);

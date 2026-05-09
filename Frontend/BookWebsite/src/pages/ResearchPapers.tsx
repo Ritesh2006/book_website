@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, ExternalLink, Download, Search, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 const ResearchPapers = () => {
   const { user } = useAuth();
@@ -12,7 +13,7 @@ const ResearchPapers = () => {
 
   const fetchPapers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/papers`);
+      const res = await axios.get(`${API_BASE_URL}/api/papers`);
       setPapers(res.data || []);
       setLoading(false);
     } catch (err) {
@@ -112,7 +113,7 @@ const PaperCard = ({ paper, user }) => {
     window.open(paper.pdfUrl || fallbackPdf, '_blank');
     if (user && paper._id) {
       try {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com'}/api/users/reading-progress`, {
+        await axios.post(`${API_BASE_URL}/api/users/reading-progress`, {
           paperId: paper._id,
           progress: 50,
           status: 'Reading'

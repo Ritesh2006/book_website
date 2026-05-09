@@ -5,11 +5,12 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import BookCard from './components/BookCard';
 import Pagination from './components/Pagination';
-import { Loader2, Filter } from 'lucide-react';
+import { Loader2, Filter, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useAuth } from './context/AuthContext';
+import { API_BASE_URL } from './config';
 import AnnouncementBar from './components/AnnouncementBar';
 import BookSlider from './components/BookSlider';
 import Chatbot from './components/Chatbot';
@@ -48,8 +49,6 @@ const App = () => {
 
   const categories = ['All', 'Classic', 'Mystery', 'Horror', 'Fantasy', 'Philosophy', 'Adventure', 'Sci-Fi', 'Romance'];
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com';
-
   const fetchBooks = async (page, query = '', category = 'All') => {
     setLoading(true);
     try {
@@ -58,7 +57,7 @@ const App = () => {
         url = `${API_BASE_URL}/api/books/search?q=${query}&page=${page}&limit=8&category=${category}`;
       }
       
-      const res = await axios.get(url);
+      const res = await axios.get(url, { timeout: 10000 }); // Add 10s timeout
       let fetchedBooks = res.data.books || [];
 
       // Update images from Google Books if needed (Optimized)
@@ -333,167 +332,275 @@ const App = () => {
 };
 
 const mockBooks = [
-  { 
-    id: 1, 
-    title: "Pride and Prejudice", 
-    author: "Jane Austen", 
-    category: "Classic", 
-    rating: 4.9, 
-    coverImage: "https://covers.openlibrary.org/b/id/14312836-L.jpg",
-    pdfUrl: "https://archive.org/download/prideprejudice00aust/prideprejudice00aust.pdf"
+  {
+    "id": "mock1",
+    "title": "The Oedipus tyrannus of Sophocles",
+    "author": "Sophocles",
+    "category": "Classic",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/oedipustyrannuso00sophiala",
+    "pdfUrl": "https://archive.org/download/oedipustyrannuso00sophiala/oedipustyrannuso00sophiala.pdf"
   },
-  { 
-    id: 2, 
-    title: "The Adventures of Sherlock Holmes", 
-    author: "Arthur Conan Doyle", 
-    category: "Mystery", 
-    rating: 4.8, 
-    coverImage: "https://covers.openlibrary.org/b/id/12832264-L.jpg",
-    pdfUrl: "https://archive.org/download/adventuresifsher00doyluoft/adventuresifsher00doyluoft.pdf"
+  {
+    "id": "mock2",
+    "title": "A general introduction to psychoanalysis",
+    "author": "Sigmund Freud",
+    "category": "Philosophy",
+    "rating": 4.7,
+    "coverImage": "https://archive.org/services/img/generalintroduct00freuiala",
+    "pdfUrl": "https://archive.org/download/generalintroduct00freuiala/generalintroduct00freuiala.pdf"
   },
-  { 
-    id: 3, 
-    title: "Moby-Dick", 
-    author: "Herman Melville", 
-    category: "Classic", 
-    rating: 4.5, 
-    coverImage: "https://covers.openlibrary.org/b/id/12660057-L.jpg",
-    pdfUrl: "https://archive.org/download/mobydickorwhale00melvuoft/mobydickorwhale00melvuoft.pdf"
+  {
+    "id": "mock3",
+    "title": "Walden: or, Life in the woods",
+    "author": "Henry David Thoreau",
+    "category": "Philosophy",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/waldenlifewoods00thorrich",
+    "pdfUrl": "https://archive.org/download/waldenlifewoods00thorrich/waldenlifewoods00thorrich.pdf"
   },
-  { 
-    id: 4, 
-    title: "Dracula", 
-    author: "Bram Stoker", 
-    category: "Horror", 
-    rating: 4.7, 
-    coverImage: "https://covers.openlibrary.org/b/id/14421115-L.jpg",
-    pdfUrl: "https://archive.org/download/dracula00stok/dracula00stok.pdf"
+  {
+    "id": "mock4",
+    "title": "The Origin of Species",
+    "author": "Charles Darwin",
+    "category": "Science",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/originofspecies00darwuoft",
+    "pdfUrl": "https://archive.org/download/originofspecies00darwuoft/originofspecies00darwuoft.pdf"
   },
-  { 
-    id: 5, 
-    title: "Alice in Wonderland", 
-    author: "Lewis Carroll", 
-    category: "Fantasy", 
-    rating: 4.9, 
-    coverImage: "https://covers.openlibrary.org/b/id/14101292-L.jpg",
-    pdfUrl: "https://archive.org/download/alicesadventure00carrgoog/alicesadventure00carrgoog.pdf"
+  {
+    "id": "mock5",
+    "title": "The Autobiography of Benjamin Franklin",
+    "author": "Benjamin Franklin",
+    "category": "Classic",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/autobiography00franrich",
+    "pdfUrl": "https://archive.org/download/autobiography00franrich/autobiography00franrich.pdf"
   },
-  { 
-    id: 6, 
-    title: "The Picture of Dorian Gray", 
-    author: "Oscar Wilde", 
-    category: "Philosophy", 
-    rating: 4.6, 
-    coverImage: "https://covers.openlibrary.org/b/id/12668541-L.jpg",
-    pdfUrl: "https://archive.org/download/pictureofdoriang00wild_0/pictureofdoriang00wild_0.pdf"
+  {
+    "id": "mock6",
+    "title": "Confessions of St. Augustine",
+    "author": "Saint Augustine",
+    "category": "Philosophy",
+    "rating": 4.7,
+    "coverImage": "https://archive.org/services/img/confessionsofst00augurich",
+    "pdfUrl": "https://archive.org/download/confessionsofst00augurich/confessionsofst00augurich.pdf"
   },
-  { 
-    id: 7, 
-    title: "Wuthering Heights", 
-    author: "Emily Brontë", 
-    category: "Classic", 
-    rating: 4.5, 
-    coverImage: "https://covers.openlibrary.org/b/id/10543209-L.jpg",
-    pdfUrl: "https://archive.org/download/wutheringheights01bron_1/wutheringheights01bron_1.pdf"
+  {
+    "id": "mock7",
+    "title": "The Odyssey of Homer",
+    "author": "Homer",
+    "category": "Adventure",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/odyssey00homerich",
+    "pdfUrl": "https://archive.org/download/odyssey00homerich/odyssey00homerich.pdf"
   },
-  { 
-    id: 8, 
-    title: "Great Expectations", 
-    author: "Charles Dickens", 
-    category: "Classic", 
-    rating: 4.8, 
-    coverImage: "https://covers.openlibrary.org/b/id/12586617-L.jpg",
-    pdfUrl: "https://archive.org/download/greatexpectation00dick/greatexpectation00dick.pdf"
+  {
+    "id": "mock8",
+    "title": "The Divine Comedy",
+    "author": "Dante Alighieri",
+    "category": "Classic",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/divinecomedy00dantuoft",
+    "pdfUrl": "https://archive.org/download/divinecomedy00dantuoft/divinecomedy00dantuoft.pdf"
   },
-  { 
-    id: 9, 
-    title: "The Adventures of Tom Sawyer", 
-    author: "Mark Twain", 
-    category: "Adventure", 
-    rating: 4.7, 
-    coverImage: "https://covers.openlibrary.org/b/id/12569438-L.jpg",
-    pdfUrl: "https://archive.org/download/74-pdf/74-pdf.pdf"
+  {
+    "id": "mock9",
+    "title": "Paradise Lost",
+    "author": "John Milton",
+    "category": "Classic",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/paradiselost00miltuoft",
+    "pdfUrl": "https://archive.org/download/paradiselost00miltuoft/paradiselost00miltuoft.pdf"
   },
-  { 
-    id: 10, 
-    title: "Jane Eyre", 
-    author: "Charlotte Brontë", 
-    category: "Romance", 
-    rating: 4.9, 
-    coverImage: "https://covers.openlibrary.org/b/id/12674393-L.jpg",
-    pdfUrl: "https://archive.org/download/janeeyre01bron/janeeyre01bron.pdf"
+  {
+    "id": "mock10",
+    "title": "Faust",
+    "author": "Johann Wolfgang von Goethe",
+    "category": "Classic",
+    "rating": 4.7,
+    "coverImage": "https://archive.org/services/img/faust00goetuoft",
+    "pdfUrl": "https://archive.org/download/faust00goetuoft/faust00goetuoft.pdf"
   },
-  { 
-    id: 11, 
-    title: "The War of the Worlds", 
-    author: "H.G. Wells", 
-    category: "Sci-Fi", 
-    rating: 4.6, 
-    coverImage: "https://covers.openlibrary.org/b/id/12644265-L.jpg",
-    pdfUrl: "https://archive.org/download/warofworlds00well/warofworlds00well.pdf"
+  {
+    "id": "mock11",
+    "title": "The Wealth of Nations",
+    "author": "Adam Smith",
+    "category": "Philosophy",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/wealthofnations00smituoft",
+    "pdfUrl": "https://archive.org/download/wealthofnations00smituoft/wealthofnations00smituoft.pdf"
   },
-  { 
-    id: 12, 
-    title: "Metamorphosis", 
-    author: "Franz Kafka", 
-    category: "Philosophy", 
-    rating: 4.5, 
-    coverImage: "https://covers.openlibrary.org/b/id/13101683-L.jpg",
-    pdfUrl: "https://archive.org/download/metamorphosis00kafk/metamorphosis00kafk.pdf"
+  {
+    "id": "mock12",
+    "title": "Meditations",
+    "author": "Marcus Aurelius",
+    "category": "Philosophy",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/meditations00marc",
+    "pdfUrl": "https://archive.org/download/meditations00marc/meditations00marc.pdf"
   },
-  { 
-    id: 13, 
-    title: "Frankenstein", 
-    author: "Mary Shelley", 
-    category: "Horror", 
-    rating: 4.8, 
-    coverImage: "https://covers.openlibrary.org/b/id/12658141-L.jpg",
-    pdfUrl: "https://archive.org/download/frankenstein00shel/frankenstein00shel.pdf"
+  {
+    "id": "mock13",
+    "title": "The Prince",
+    "author": "Niccolò Machiavelli",
+    "category": "Philosophy",
+    "rating": 4.6,
+    "coverImage": "https://archive.org/services/img/prince00machuoft",
+    "pdfUrl": "https://archive.org/download/prince00machuoft/prince00machuoft.pdf"
   },
-  { 
-    id: 14, 
-    title: "The Time Machine", 
-    author: "H.G. Wells", 
-    category: "Sci-Fi", 
-    rating: 4.7, 
-    coverImage: "https://covers.openlibrary.org/b/id/12644267-L.jpg",
-    pdfUrl: "https://archive.org/download/timemachine00well/timemachine00well.pdf"
+  {
+    "id": "mock14",
+    "title": "Frankenstein",
+    "author": "Mary Shelley",
+    "category": "Horror",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/frankensteinor00shel",
+    "pdfUrl": "https://archive.org/download/frankensteinor00shel/frankensteinor00shel.pdf"
   },
-  { 
-    id: 15, 
-    title: "The Odyssey", 
-    author: "Homer", 
-    category: "Adventure", 
-    rating: 4.9, 
-    coverImage: "https://covers.openlibrary.org/b/id/12660058-L.jpg",
-    pdfUrl: "https://archive.org/download/odysseyofhomer00homeuoft/odysseyofhomer00homeuoft.pdf"
+  {
+    "id": "mock15",
+    "title": "Dracula",
+    "author": "Bram Stoker",
+    "category": "Horror",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/dracula00stok",
+    "pdfUrl": "https://archive.org/download/dracula00stok/dracula00stok.pdf"
   },
-  { 
-    id: 16, 
-    title: "Gulliver's Travels", 
-    author: "Jonathan Swift", 
-    category: "Adventure", 
-    rating: 4.6, 
-    coverImage: "https://covers.openlibrary.org/b/id/12660059-L.jpg",
-    pdfUrl: "https://archive.org/download/gulliverstravels00swif/gulliverstravels00swif.pdf"
+  {
+    "id": "mock16",
+    "title": "Common Sense",
+    "author": "Thomas Paine",
+    "category": "Philosophy",
+    "rating": 4.7,
+    "coverImage": "https://archive.org/services/img/commonsense00painiala",
+    "pdfUrl": "https://archive.org/download/commonsense00painiala/commonsense00painiala.pdf"
   },
-  { 
-    id: 17, 
-    title: "The Jungle Book", 
-    author: "Rudyard Kipling", 
-    category: "Adventure", 
-    rating: 4.8, 
-    coverImage: "https://covers.openlibrary.org/b/id/12660060-L.jpg",
-    pdfUrl: "https://archive.org/download/junglebook00kipl/junglebook00kipl.pdf"
+  {
+    "id": "mock17",
+    "title": "Grimms' Fairy Tales",
+    "author": "Jacob and Wilhelm Grimm",
+    "category": "Fantasy",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/grimmsfairytales00grim",
+    "pdfUrl": "https://archive.org/download/grimmsfairytales00grim/grimmsfairytales00grim.pdf"
   },
-  { 
-    id: 18, 
-    title: "Treasure Island", 
-    author: "Robert Louis Stevenson", 
-    category: "Adventure", 
-    rating: 4.9, 
-    coverImage: "https://covers.openlibrary.org/b/id/12660061-L.jpg",
-    pdfUrl: "https://archive.org/download/treasureisland00ste/treasureisland00ste.pdf"
+  {
+    "id": "mock18",
+    "title": "Gulliver's Travels",
+    "author": "Jonathan Swift",
+    "category": "Adventure",
+    "rating": 4.6,
+    "coverImage": "https://archive.org/services/img/gulliverstravels00swif",
+    "pdfUrl": "https://archive.org/download/gulliverstravels00swif/gulliverstravels00swif.pdf"
+  },
+  {
+    "id": "mock19",
+    "title": "Robinson Crusoe",
+    "author": "Daniel Defoe",
+    "category": "Adventure",
+    "rating": 4.7,
+    "coverImage": "https://archive.org/services/img/robinsoncrusoe00defo",
+    "pdfUrl": "https://archive.org/download/robinsoncrusoe00defo/robinsoncrusoe00defo.pdf"
+  },
+  {
+    "id": "mock20",
+    "title": "Treasure Island",
+    "author": "Robert Louis Stevenson",
+    "category": "Adventure",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/treasureisland00stev",
+    "pdfUrl": "https://archive.org/download/treasureisland00stev/treasureisland00stev.pdf"
+  },
+  {
+    "id": "mock21",
+    "title": "Alice's Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "category": "Fantasy",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/alicesadventures00carr",
+    "pdfUrl": "https://archive.org/download/alicesadventures00carr/alicesadventures00carr.pdf"
+  },
+  {
+    "id": "mock22",
+    "title": "The Adventures of Sherlock Holmes",
+    "author": "Arthur Conan Doyle",
+    "category": "Mystery",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/adventuressherl00doylgoog",
+    "pdfUrl": "https://archive.org/download/adventuressherl00doylgoog/adventuressherl00doylgoog.pdf"
+  },
+  {
+    "id": "mock23",
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "category": "Classic",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/prideprejudice00aust",
+    "pdfUrl": "https://archive.org/download/prideprejudice00aust/prideprejudice00aust.pdf"
+  },
+  {
+    "id": "mock24",
+    "title": "Jane Eyre",
+    "author": "Charlotte Brontë",
+    "category": "Romance",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/janeeyre00bron",
+    "pdfUrl": "https://archive.org/download/janeeyre00bron/janeeyre00bron.pdf"
+  },
+  {
+    "id": "mock25",
+    "title": "Wuthering Heights",
+    "author": "Emily Brontë",
+    "category": "Classic",
+    "rating": 4.5,
+    "coverImage": "https://archive.org/services/img/wutheringheights00bron",
+    "pdfUrl": "https://archive.org/download/wutheringheights00bron/wutheringheights00bron.pdf"
+  },
+  {
+    "id": "mock26",
+    "title": "Great Expectations",
+    "author": "Charles Dickens",
+    "category": "Classic",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/greatexpectation00dick",
+    "pdfUrl": "https://archive.org/download/greatexpectation00dick/greatexpectation00dick.pdf"
+  },
+  {
+    "id": "mock27",
+    "title": "A Tale of Two Cities",
+    "author": "Charles Dickens",
+    "category": "Classic",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/taleoftwocities00dick",
+    "pdfUrl": "https://archive.org/download/taleoftwocities00dick/taleoftwocities00dick.pdf"
+  },
+  {
+    "id": "mock28",
+    "title": "Les Misérables",
+    "author": "Victor Hugo",
+    "category": "Classic",
+    "rating": 4.9,
+    "coverImage": "https://archive.org/services/img/lesmiserables00hugo",
+    "pdfUrl": "https://archive.org/download/lesmiserables00hugo/lesmiserables00hugo.pdf"
+  },
+  {
+    "id": "mock29",
+    "title": "War and Peace",
+    "author": "Leo Tolstoy",
+    "category": "Classic",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/warpeace00tols",
+    "pdfUrl": "https://archive.org/download/warpeace00tols/warpeace00tols.pdf"
+  },
+  {
+    "id": "mock30",
+    "title": "Crime and Punishment",
+    "author": "Fyodor Dostoevsky",
+    "category": "Classic",
+    "rating": 4.8,
+    "coverImage": "https://archive.org/services/img/crimepunishment00dosto",
+    "pdfUrl": "https://archive.org/download/crimepunishment00dosto/crimepunishment00dosto.pdf"
   }
 ];
 

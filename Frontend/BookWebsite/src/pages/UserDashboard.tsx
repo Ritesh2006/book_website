@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Book, Clock, CheckCircle, Star, TrendingUp, Settings, X, Save, ShieldAlert, MessageCircle, Info, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const UserDashboard = () => {
   const { user, checkUser, logout } = useAuth();
@@ -38,7 +39,7 @@ const UserDashboard = () => {
     checkUser(); // Sync with DB on dashboard enter
   }, []);
 
-  const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://book-website-1.onrender.com';
+  const API_URL = API_BASE_URL;
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();

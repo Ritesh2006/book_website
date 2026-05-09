@@ -5,9 +5,6 @@ const bookController = require('../controllers/bookController');
 // @route GET /api/books
 router.get('/', bookController.getBooks);
 
-// @route GET /api/books/:id
-router.get('/:id', bookController.getBookById);
-
 // @route GET /api/books/search
 router.get('/search', async (req, res) => {
     try {
@@ -49,6 +46,9 @@ router.get('/search', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+// @route GET /api/books/:id
+router.get('/:id', bookController.getBookById);
 
 // @route POST /api/books
 router.post('/', bookController.addBook);

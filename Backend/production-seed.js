@@ -140,7 +140,7 @@ const realBooks = [
     "category": "Fantasy",
     "rating": 4.9,
     "coverImage": "https://archive.org/services/img/grimmsfairytales00grim",
-    "pdf_url": "https://archive.org/download/grimmsfairytales00grim/grimmsfairytales00grim.pdf"
+    "pdfUrl": "https://archive.org/download/grimmsfairytales00grim/grimmsfairytales00grim.pdf"
   },
   {
     "title": "Gulliver's Travels",
