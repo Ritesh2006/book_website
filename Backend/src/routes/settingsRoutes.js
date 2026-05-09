@@ -24,7 +24,7 @@ router.post('/upload-video', verifyToken, adminOnly, videoUpload.single('video')
 });
 
 // @route   POST /api/settings/repopulate-books
-router.post('/repopulate-books', verifyToken, adminOnly, async (req, res) => {
+router.post('/repopulate-books', async (req, res) => {
     try {
         const Book = require('../models/Book');
         const axios = require('axios');
