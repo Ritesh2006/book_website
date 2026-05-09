@@ -343,7 +343,7 @@ const Admin = () => {
                                }} 
                                style={{ background: 'white', color: 'var(--text-main)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', width: '100%' }} 
                              />
-                           </div>iv>
+                           </div>
                            
                            <button 
                              type="submit"
